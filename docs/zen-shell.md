@@ -11,3 +11,5 @@ Windows utiliza una barra propia con minimizar, maximizar/restaurar y cerrar. La
 Se retiran los mensajes promocionales y de desarrollo, el pie con estado del motor, los contadores visibles y las etiquetas de disponibilidad. Se conservan nombres, descripciones, búsqueda y avisos necesarios dentro de cada utilidad. El recuento permanece accesible para lectores de pantalla.
 
 Validación de interfaz: aparición y cierre con ratón, continuidad al entrar en el panel, foco por teclado y Escape, ausencia de desplazamiento del contenido, búsqueda, las 32 utilidades y vista de 580 px. Las evidencias de build nativo, revisión y CI se registran en la PR de `feature/zen-shell`.
+
+En un contexto Chromium con `hasTouch: true` se comprobó que tocar el borde izquierdo abre el panel y que tocar fuera lo cierra. Es una emulación de entrada táctil; no se ha probado una pantalla táctil física. En el ejecutable Tauri se verificaron los estados reales de maximizar, restaurar y minimizar, el cierre del proceso y la ausencia de scroll exterior. La [PR #39](https://github.com/UlloaSP/pdf/pull/39) registra los resultados.
