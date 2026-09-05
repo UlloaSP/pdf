@@ -1,0 +1,18 @@
+{
+  "id": "unlock",
+  "name": "Desbloquear PDF",
+  "description": "Elimina el cifrado usando la contraseña del documento.",
+  "category": "Seguridad",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "password",
+      "label": "Contraseña actual",
+      "type": "password"
+    }
+  ],
+  "requirements": []
+}
