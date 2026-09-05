@@ -1,0 +1,19 @@
+{
+  "id": "forms",
+  "name": "Rellenar formularios",
+  "description": "Rellena campos de texto AcroForm existentes mediante JSON.",
+  "category": "Edición",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "values",
+      "label": "Valores JSON por nombre de campo",
+      "type": "textarea",
+      "default": "{\"nombre\": \"Ana\"}"
+    }
+  ],
+  "requirements": []
+}
