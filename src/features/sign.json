@@ -1,0 +1,37 @@
+{
+  "id": "sign",
+  "name": "Firma visible",
+  "description": "Coloca el nombre del firmante. No es una firma digital criptográfica.",
+  "category": "Seguridad",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "name",
+      "label": "Nombre del firmante",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "page",
+      "label": "Página",
+      "type": "number",
+      "default": 1
+    },
+    {
+      "key": "x",
+      "label": "Desde izquierda (pt)",
+      "type": "number",
+      "default": 36
+    },
+    {
+      "key": "y",
+      "label": "Desde abajo (pt)",
+      "type": "number",
+      "default": 36
+    }
+  ],
+  "requirements": []
+}
