@@ -2,6 +2,8 @@
 
 Las 32 PRs de utilidad están integradas en develop, con revisión independiente y CI aprobado antes de cada merge. main conserva el commit inicial; esta entrega no publica una release de producto.
 
+Seguimiento: la [PR #36](https://github.com/UlloaSP/pdf/pull/36) configura CodeRabbit para todos los destinos, incorpora la skill frontend-design de Claude y documenta el arranque local. La [PR #37](https://github.com/UlloaSP/pdf/pull/37) sincroniza exclusivamente el YAML con main. El esquema oficial valida la configuración; CodeRabbit la reconoce, pero sus límites de estrellas y cuota OSS impiden confirmar revisiones automáticas efectivas. El procedimiento de revisión sustituta está en `docs/gitflow.md`; los resultados de CI y los merges se consultan en cada PR.
+
 Se han preparado 32 utilidades con formulario y motor local, cada una en su rama `feature/<id>` y su PR hacia `develop`. La interfaz usa React y TypeScript; Tauri/Rust ejecuta el worker Python empaquetado. Esta entrega ofrece los recorridos descritos abajo; no alcanza todavía todas las capacidades de la aplicación de referencia.
 
 ## Ramas y utilidades

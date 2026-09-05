@@ -23,6 +23,8 @@ La configuración se lee desde la rama origen de la PR. Las ramas nuevas la here
 
 Comprueba el comentario de CodeRabbit y sus hallazgos antes del merge, además de CI. Si una PR abierta antes de configurar el bot quedó omitida, actualiza su rama y comenta `@coderabbitai review`. Si persiste «Review skipped», consulta el motivo en «Run configuration» y verifica en la aplicación de CodeRabbit que no haya overrides de organización; el YAML no puede anularlos. Las instrucciones y opciones están en la [documentación oficial](https://docs.coderabbit.ai/configuration/auto-review).
 
+El 5 de septiembre de 2026, CodeRabbit reconoció este YAML en las PR #36 y #37, pero indicó que el repositorio no recibe revisiones automáticas por tener menos de 10 estrellas. Los intentos manuales también terminaron con el límite temporal de revisiones OSS. Son restricciones del servicio, no errores de patrones de ramas. Mientras persistan, solicita revisión manual cuando haya cupo; si el servicio no está disponible, exige revisión independiente y CI, y registra en la PR el motivo y la evidencia de la revisión sustituta. No declares una revisión omitida o limitada como aprobada.
+
 ## Trabajo paralelo
 
 Usa hasta tres agentes implementadores junto al coordinador. Cada agente trabaja en su propio worktree y ramas. Cada utilidad mantiene su PR individual aunque un agente complete varias sucesivamente. La infraestructura compartida se integra antes de las utilidades. Evita modificar archivos compartidos desde ramas de utilidad; registra módulos mediante descubrimiento automático.
