@@ -3,5 +3,5 @@
   "identifier": "default",
   "description": "Capacidad mínima para la ventana principal",
   "windows": ["main"],
-  "permissions": ["core:default"]
+  "permissions": ["core:default", "dialog:allow-open"]
 }
