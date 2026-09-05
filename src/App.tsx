@@ -38,7 +38,7 @@ const ids = [
   "pdf_to_markdown",
   "workflow",
 ];
-const catalog = tools.map((tool, index) => {
+const plannedCatalog = tools.map((tool, index) => {
   const feature = features.find((candidate) => candidate.id === ids[index]);
   return {
     ...tool,
@@ -46,6 +46,12 @@ const catalog = tools.map((tool, index) => {
     feature,
   };
 });
+const catalog = [
+  ...plannedCatalog,
+  ...features
+    .filter((feature) => !ids.includes(feature.id))
+    .map((feature) => ({ ...feature, feature })),
+];
 
 export function App() {
   const [selected, setSelected] = useState<Feature | null>(null);
@@ -117,8 +123,8 @@ export function App() {
               {item}
               <span>
                 {item === "Todas"
-                  ? tools.length
-                  : tools.filter((tool) => tool.category === item).length}
+                  ? catalog.length
+                  : catalog.filter((tool) => tool.category === item).length}
               </span>
             </button>
           ))}
