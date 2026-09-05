@@ -33,3 +33,21 @@ class ConversionTests(unittest.TestCase):
     def test_invalid_dpi(self):
         with self.assertRaises(ValueError):
             feature.run([str(self.source)], str(self.out), {"dpi": 0})
+
+    def test_extracts_embedded_image(self):
+        from PIL import Image
+        from reportlab.pdfgen import canvas
+        source_image = self.root / "embedded.png"
+        Image.new("RGB", (60, 40), "red").save(source_image)
+        document = canvas.Canvas(str(self.source))
+        document.drawImage(str(source_image), 20, 20, 120, 80)
+        document.save()
+        paths = feature.run([str(self.source)], str(self.out), {"mode": "Extraer imágenes"})
+        self.assertEqual(len(paths), 1)
+        with Image.open(paths[0]) as extracted:
+            self.assertEqual(extracted.size, (60, 40))
+            self.assertGreater(extracted.getpixel((20, 20))[0], 240)
+
+    def test_reports_no_embedded_images(self):
+        with self.assertRaisesRegex(ValueError, "incrustadas"):
+            feature.run([str(self.source)], str(self.out), {"mode": "Extraer imágenes"})
