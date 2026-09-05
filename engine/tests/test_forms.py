@@ -34,6 +34,23 @@ class FeatureTest(unittest.TestCase):
         with self.assertRaises(ValueError): run([form],str(self.out),{'values':'{"missing":"x"}'})
         with self.assertRaises(ValueError): run([self.pdf],str(self.out),{'values':'{"nombre":"x"}'})
 
+    def test_create_and_fill_text_and_checkbox(self):
+        import json
+        definitions = [dict(name='nombre', type='text', x=30, y=100, value='Ana'), dict(name='acepto',type='checkbox',x=30,y=50)]
+        created = run([self.pdf],str(self.out),{'mode':'Crear campos','definitions':json.dumps(definitions)})[0]
+        reader=PdfReader(created)
+        self.assertEqual(len(reader.pages),3)
+        self.assertIn('Page 1',reader.pages[0].extract_text())
+        self.assertEqual(reader.get_form_text_fields()['nombre'],'Ana')
+        filled=run([created],str(self.out/'filled'),{'values':'{"nombre":"Bea","acepto":true}'})[0]
+        fields=PdfReader(filled).get_fields()
+        self.assertEqual(fields['nombre']['/V'],'Bea')
+        self.assertEqual(fields['acepto']['/V'],'/Yes')
+
+    def test_rejects_field_outside_page(self):
+        with self.assertRaisesRegex(ValueError,'no cabe'):
+            run([self.pdf],str(self.out),{'mode':'Crear campos','definitions':'[{"name":"x","x":999}]'})
+
     def test_rejects_empty_input(self):
         with self.assertRaises(ValueError):
             run([],str(self.out),{})
