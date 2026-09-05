@@ -1,0 +1,37 @@
+{
+  "id": "watermark",
+  "name": "Marca de agua",
+  "description": "Añade una marca de texto centrada a las páginas elegidas.",
+  "category": "Edición",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "pages",
+      "label": "Páginas (vacío = todas; ejemplo 1,3-5)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "text",
+      "label": "Texto",
+      "type": "text",
+      "default": "CONFIDENCIAL"
+    },
+    {
+      "key": "font_size",
+      "label": "Tamaño (pt)",
+      "type": "number",
+      "default": 32
+    },
+    {
+      "key": "opacity",
+      "label": "Opacidad (0 a 1)",
+      "type": "number",
+      "default": 0.25
+    }
+  ],
+  "requirements": []
+}
