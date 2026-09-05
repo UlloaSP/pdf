@@ -52,15 +52,28 @@ function NativeWindowControls() {
 
   return (
     <div className="window-controls" role="group" aria-label="Controles de la ventana">
-      {error ? <span className="window-control-error" role="status">{error}</span> : null}
+      {error ? (
+        <span className="window-control-error" role="status">
+          {error}
+        </span>
+      ) : null}
       <button
         className="window-control"
         type="button"
         aria-label="Minimizar ventana"
         title="Minimizar ventana"
-        onClick={() => void perform(() => nativeWindow.minimize(), "No se pudo minimizar la ventana.")}
+        onClick={() =>
+          void perform(() => nativeWindow.minimize(), "No se pudo minimizar la ventana.")
+        }
       >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true">
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
           <path d="M1 6h10" />
         </svg>
       </button>
@@ -69,10 +82,26 @@ function NativeWindowControls() {
         type="button"
         aria-label={maximizeLabel}
         title={maximizeLabel}
-        onClick={() => void perform(() => nativeWindow.toggleMaximize(), "No se pudo cambiar el tamaño de la ventana.")}
+        onClick={() =>
+          void perform(
+            () => nativeWindow.toggleMaximize(),
+            "No se pudo cambiar el tamaño de la ventana.",
+          )
+        }
       >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true">
-          {maximized ? <path d="M3.5 3.5v-2h7v7h-2m-7-5h7v7h-7z" /> : <rect x="1.5" y="1.5" width="9" height="9" />}
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          {maximized ? (
+            <path d="M3.5 3.5v-2h7v7h-2m-7-5h7v7h-7z" />
+          ) : (
+            <rect x="1.5" y="1.5" width="9" height="9" />
+          )}
         </svg>
       </button>
       <button
@@ -82,7 +111,14 @@ function NativeWindowControls() {
         title="Cerrar ventana"
         onClick={() => void perform(() => nativeWindow.close(), "No se pudo cerrar la ventana.")}
       >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" aria-hidden="true">
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 12 12"
+          fill="none"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
           <path d="m1.5 1.5 9 9m0-9-9 9" />
         </svg>
       </button>

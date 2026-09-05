@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { getAppInfo } from "./native";
+import { useEffect, useRef, useState } from "react";
+import { RevealPanel } from "./RevealPanel";
+import { WindowControls } from "./WindowControls";
 import { categories, tools, type Category } from "./tools";
 import { features, type Feature } from "./features";
 import { Workspace } from "./Workspace";
@@ -55,30 +56,13 @@ const catalog = [
 
 export function App() {
   const [selected, setSelected] = useState<Feature | null>(null);
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [selected]);
+  const [busy, setBusy] = useState(false);
   const [category, setCategory] = useState<Category>("Todas");
   const [query, setQuery] = useState("");
-  const [runtime, setRuntime] = useState("Comprobando conexión local…");
+  const main = useRef<HTMLElement>(null);
   useEffect(() => {
-    let active = true;
-    getAppInfo()
-      .then((info) => {
-        if (active)
-          setRuntime(
-            info
-              ? `Motor local conectado · v${info.version}`
-              : "Vista previa web · sin motor nativo",
-          );
-      })
-      .catch(() => {
-        if (active) setRuntime("No se ha podido conectar con el motor local");
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
+    main.current?.scrollTo(0, 0);
+  }, [selected, category]);
   const normalize = (text: string) =>
     text
       .normalize("NFD")
@@ -87,125 +71,109 @@ export function App() {
   const visible = catalog.filter(
     (tool) =>
       (category === "Todas" || tool.category === category) &&
-      normalize(`${tool.name} ${tool.description}`).includes(
-        normalize(query.trim()),
-      ),
+      normalize(`${tool.name} ${tool.description}`).includes(normalize(query.trim())),
   );
-
-  if (selected)
-    return (
-      <main className="workspace-shell">
-        <Workspace
-          key={selected.id}
-          feature={selected}
-          onClose={() => setSelected(null)}
-        />
-      </main>
-    );
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <a className="brand" href="#main">
-          <span className="brand-mark" aria-hidden="true">
-            P.
-          </span>{" "}
-          PDF Utils
-        </a>
-        <p className="nav-label">ESPACIO DE TRABAJO</p>
-        <nav aria-label="Categorías de herramientas">
-          {categories.map((item) => (
-            <button
-              key={item}
-              aria-pressed={category === item}
-              onClick={() => setCategory(item)}
-            >
-              {item}
-              <span>
-                {item === "Todas"
-                  ? catalog.length
-                  : catalog.filter((tool) => tool.category === item).length}
-              </span>
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-note">
-          <span className="status-dot" />
-          Diseñada para trabajar en local<p>Tus documentos, en tu equipo.</p>
-        </div>
-      </aside>
-      <main id="main">
+      <RevealPanel side="top" label="Mostrar barra superior">
         <header className="topbar">
-          <span>Biblioteca de herramientas</span>
-          <span className="build-label">DESARROLLO</span>
+          <div className="window-drag" data-tauri-drag-region>
+            <span data-tauri-drag-region>PDF Utils</span>
+          </div>
+          <WindowControls />
         </header>
-        <section className="intro" aria-labelledby="title">
-          <p className="eyebrow">DOCUMENTOS EN ORDEN</p>
-          <h1 id="title">Un lugar para tus PDF.</h1>
-          <p>Organiza, convierte y prepara tus documentos desde Windows.</p>
-        </section>
-        <div className="notice">
-          <strong>Procesamiento local de documentos.</strong>
-          <span>
-            Elige una herramienta disponible para seleccionar archivos y guardar
-            el resultado en una nueva carpeta. Las dependencias adicionales se
-            indican en cada utilidad.
-          </span>
-        </div>
-        <div className="catalog-heading">
-          <h2>{category === "Todas" ? "Todas las herramientas" : category}</h2>
-          <label className="search">
-            <span className="sr-only">Buscar herramienta</span>
-            <input
-              type="search"
-              placeholder="Buscar herramienta…"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
+      </RevealPanel>
+      <RevealPanel side="left" label="Mostrar navegación">
+        <aside className="sidebar">
+          <div className="brand">
+            <span className="brand-mark" aria-hidden="true">
+              P.
+            </span>{" "}
+            PDF Utils
+          </div>
+          <nav aria-label="Categorías de herramientas">
+            {categories.map((item) => (
+              <button
+                key={item}
+                disabled={busy}
+                aria-pressed={category === item}
+                onClick={() => {
+                  setCategory(item);
+                  setSelected(null);
+                }}
+              >
+                {item}
+              </button>
+            ))}
+          </nav>
+        </aside>
+      </RevealPanel>
+      <main id="main" ref={main} tabIndex={-1}>
+        {selected ? (
+          <div className="workspace-shell">
+            <Workspace
+              key={selected.id}
+              feature={selected}
+              onBusyChange={setBusy}
+              onClose={() => setSelected(null)}
             />
-          </label>
-        </div>
-        <p className="result-count" role="status">
-          {visible.length}{" "}
-          {visible.length === 1 ? "herramienta" : "herramientas"}
-        </p>
-        <section className="tool-grid" aria-label="Catálogo de utilidades">
-          {visible.map((tool) => (
-            <article className="tool-card" key={tool.name}>
-              <div className="card-meta">
-                <span className="file-icon" aria-hidden="true">
-                  PDF
-                </span>
-                <span className="planned">
-                  {tool.feature
-                    ? tool.feature.requirements.length
-                      ? "Motor adicional"
-                      : "Disponible"
-                    : "Planificada"}
-                </span>
-              </div>
-              <h3>{tool.name}</h3>
-              <p>{tool.description}</p>
-              {tool.feature ? (
+          </div>
+        ) : (
+          <>
+            <div className="catalog-heading">
+              <h1 className="sr-only">Herramientas PDF</h1>
+              <label className="search">
+                <span className="sr-only">Buscar herramienta</span>
+                <svg aria-hidden="true" viewBox="0 0 24 24">
+                  <circle cx="10.5" cy="10.5" r="6.5" />
+                  <path d="m16 16 4 4" />
+                </svg>
+                <input
+                  type="search"
+                  placeholder="Buscar herramienta…"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                />
+              </label>
+              {category !== "Todas" && (
                 <button
-                  className="open-tool"
-                  onClick={() => setSelected(tool.feature!)}
+                  className="category-filter"
+                  onClick={() => setCategory("Todas")}
+                  aria-label={`Quitar filtro ${category}`}
                 >
-                  Abrir {tool.name}
+                  {category}
+                  <span aria-hidden="true">×</span>
                 </button>
-              ) : null}
-            </article>
-          ))}
-        </section>
-        {visible.length === 0 ? (
-          <p className="empty">
-            No hay herramientas con ese nombre. Prueba otra búsqueda o
-            categoría.
-          </p>
-        ) : null}
-        <footer>
-          <span role="status">{runtime}</span>
-          <span>PDF Utils · versión de desarrollo</span>
-        </footer>
+              )}
+            </div>
+            <p className="sr-only" role="status">
+              {visible.length} herramientas
+            </p>
+            <section className="tool-grid" aria-label="Catálogo de utilidades">
+              {visible.map((tool) => (
+                <article className="tool-card" key={tool.name}>
+                  <span className="file-icon" aria-hidden="true">
+                    PDF
+                  </span>
+                  <h2>{tool.name}</h2>
+                  <p>{tool.description}</p>
+                  {tool.feature ? (
+                    <button className="open-tool" onClick={() => setSelected(tool.feature!)}>
+                      Abrir <span className="sr-only">{tool.name}</span>
+                      <span aria-hidden="true">↗</span>
+                    </button>
+                  ) : null}
+                </article>
+              ))}
+            </section>
+            {visible.length === 0 && (
+              <p className="empty">
+                No hay herramientas con ese nombre. Prueba otra búsqueda o categoría.
+              </p>
+            )}
+          </>
+        )}
       </main>
     </div>
   );
