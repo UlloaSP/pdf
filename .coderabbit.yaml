@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: es
+reviews:
+  review_status: true
+  auto_review:
+    enabled: true
+    base_branches:
+      - ".*"
+    drafts: true
+    auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 0
+    ignore_title_keywords: []
+    ignore_usernames: []
+    labels: []
+    description_keyword: ""
