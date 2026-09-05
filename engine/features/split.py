@@ -58,6 +58,6 @@ def run(inputs, output_dir, options):
     outputs = []
     for ordinal, index in enumerate(selected, 1):
         writer = PdfWriter()
-        writer.add_page(reader.pages[index])
+        writer.append(reader, pages=[index])
         outputs.append(save(writer, output_dir, f"pagina-{ordinal:04d}-{index + 1}.pdf"))
     return outputs

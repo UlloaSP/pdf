@@ -30,6 +30,15 @@ class FeatureTest(unittest.TestCase):
         self.assertIn('Page 3', PdfReader(outputs[0]).pages[0].extract_text())
         with self.assertRaises(ValueError): run([self.pdf], str(self.out), {'pages': '0'})
 
+    def test_preserves_editable_form(self):
+        form = str(Path(self.tmp.name) / 'form.pdf')
+        c = canvas.Canvas(form, pagesize=(400, 500))
+        c.acroForm.textfield(name='nombre', value='Ana', x=30, y=100)
+        c.showPage()
+        c.save()
+        result = PdfReader(run([form], str(self.out), {})[0])
+        self.assertEqual(result.get_form_text_fields()['nombre'], 'Ana')
+
     def test_rejects_empty_input(self):
         with self.assertRaises(ValueError):
             run([],str(self.out),{})
