@@ -1,0 +1,12 @@
+{
+  "id": "repair",
+  "name": "Reparar PDF",
+  "description": "Reconstruye archivos que todavía permiten recuperar sus objetos y páginas.",
+  "category": "Avanzadas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": []
+}

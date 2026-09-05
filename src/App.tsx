@@ -38,13 +38,20 @@ const ids = [
   "pdf_to_markdown",
   "workflow",
 ];
-const catalog = tools.map((tool, index) => ({
-  ...tool,
-  feature: features.find((feature) => feature.id === ids[index]),
-}));
+const catalog = tools.map((tool, index) => {
+  const feature = features.find((candidate) => candidate.id === ids[index]);
+  return {
+    ...tool,
+    description: feature?.description ?? tool.description,
+    feature,
+  };
+});
 
 export function App() {
   const [selected, setSelected] = useState<Feature | null>(null);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selected]);
   const [category, setCategory] = useState<Category>("Todas");
   const [query, setQuery] = useState("");
   const [runtime, setRuntime] = useState("Comprobando conexión local…");
