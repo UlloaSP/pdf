@@ -59,6 +59,8 @@ def run(inputs, output_dir, options):
     writer = PdfWriter(clone_from=reader)
     for index in selected:
         page = writer.pages[index]
+        if page.rotation and page.get('/Annots'):
+            raise ValueError("Las páginas rotadas con anotaciones requieren aplanar sus anotaciones antes de recortar.")
         page.transfer_rotation_to_content()
         box = page.cropbox
         left = float(box.left) + margins["left"]

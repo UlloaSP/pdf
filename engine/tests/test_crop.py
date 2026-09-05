@@ -31,6 +31,18 @@ class FeatureTest(unittest.TestCase):
         self.assertIn('Page 1', reader.pages[0].extract_text())
         with self.assertRaises(ValueError): run([self.pdf], str(self.out), {'left': 900})
 
+    def test_rejects_rotated_annotations(self):
+        from pypdf import PdfWriter
+        form=Path(self.tmp.name)/'rotated.pdf'
+        c=canvas.Canvas(str(form),pagesize=(400,500))
+        c.acroForm.textfield(name='name',x=30,y=100)
+        c.showPage(); c.save()
+        writer=PdfWriter(clone_from=PdfReader(form))
+        writer.pages[0].rotate(90)
+        with form.open('wb') as stream: writer.write(stream)
+        with self.assertRaisesRegex(ValueError,'anotaciones'):
+            run([str(form)],str(self.out),{})
+
     def test_rejects_empty_input(self):
         with self.assertRaises(ValueError):
             run([],str(self.out),{})
