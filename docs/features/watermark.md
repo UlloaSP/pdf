@@ -2,7 +2,7 @@
 
 Añade una marca de texto centrada a las páginas elegidas.
 
-Marca de texto horizontal centrada, alfabeto Windows-1252. 
+Marca de texto horizontal centrada, alfabeto Windows-1252.
 
 Validación: unittest con PDF de tres páginas generado por ReportLab; comprueba resultado y rechazo de entradas inválidas.
 
