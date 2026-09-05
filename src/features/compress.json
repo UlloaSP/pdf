@@ -1,0 +1,12 @@
+{
+  "id": "compress",
+  "name": "Comprimir PDF",
+  "description": "Comprime sin pérdida los flujos internos. El ahorro depende del documento.",
+  "category": "Avanzadas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": []
+}
