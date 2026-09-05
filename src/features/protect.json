@@ -1,0 +1,18 @@
+{
+  "id": "protect",
+  "name": "Proteger PDF",
+  "description": "Cifra el documento con una contraseña AES-256.",
+  "category": "Seguridad",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "password",
+      "label": "Contraseña de apertura",
+      "type": "password"
+    }
+  ],
+  "requirements": []
+}
