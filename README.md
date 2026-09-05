@@ -21,19 +21,22 @@ npm run dev
 
 Abre `http://127.0.0.1:1420`. Para la aplicación de escritorio instala además Rust con toolchain MSVC, Visual Studio Build Tools con Desktop development with C++, Windows SDK y WebView2. El empaquetado MSI también requiere la característica opcional VBSCRIPT de Windows. Consulta los [requisitos oficiales](https://v2.tauri.app/start/prerequisites/).
 
-```powershell
-npm run desktop:dev
-```
-
-Antes del primer arranque nativo, prepara el worker con Python 3.14:
+Para el primer arranque nativo, desde la raíz del repositorio, prepara el worker con Python 3.14 y después inicia Tauri:
 
 ```powershell
+npm ci
 python -m venv .venv
 .venv/Scripts/python -m pip install -r engine/requirements.txt
 .venv/Scripts/python scripts/build-engine.py
+$env:Path = "$env:USERPROFILE\.cargo\bin;$env:Path"
+npm run desktop:dev
 ```
 
 Repite el empaquetado cuando cambien los motores. El MSI incluye este worker y su runtime Python.
+
+En los siguientes arranques basta con configurar el PATH de Cargo si no está disponible en la terminal y ejecutar `npm run desktop:dev`. Tauri inicia Vite automáticamente: cierra antes cualquier `npm run dev` que esté usando el puerto 1420. No hace falta arrancar un servidor backend aparte. Los motores opcionales (LibreOffice, Tesseract, Ghostscript u Ollama) se instalan según la utilidad; consulta sus requisitos en `docs/features`.
+
+Las tareas de interfaz siguen la [skill frontend-design de Claude](.claude/skills/frontend-design/SKILL.md), incluida en el repositorio y referenciada en `AGENTS.md`.
 
 ## Comprobaciones y compilación
 
