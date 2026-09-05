@@ -1,0 +1,12 @@
+{
+  "id": "pdf_to_powerpoint",
+  "name": "PDF a PowerPoint",
+  "description": "Crea una diapositiva por página como imagen. Conserva el aspecto visual; el texto dentro de la imagen no es editable.",
+  "category": "Conversión",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": []
+}
