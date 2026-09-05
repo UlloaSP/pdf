@@ -10,6 +10,77 @@
   --muted: #626960;
   --line: #dedfd6;
 }
+.workspace-shell {
+  max-width: 1000px;
+  margin: 30px auto;
+}
+.workspace button,
+.open-tool {
+  cursor: pointer;
+  padding: 9px 14px;
+  border: 1px solid #bbbfb5;
+  background: #fffefa;
+  color: #282d2a;
+  border-radius: 5px;
+}
+.open-tool {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--accent);
+}
+.workspace button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.workspace fieldset {
+  border: 1px solid var(--line);
+  padding: 24px;
+  margin: 24px 0;
+  border-radius: 8px;
+}
+.workspace .option {
+  display: grid;
+  gap: 7px;
+  margin: 18px 0;
+}
+.workspace input,
+.workspace select,
+.workspace textarea {
+  font: inherit;
+  padding: 9px;
+  border: 1px solid #b7bdb0;
+  border-radius: 4px;
+  background: white;
+  color: #282d2a;
+}
+.workspace input[type="checkbox"] {
+  justify-self: start;
+}
+.workspace textarea {
+  min-height: 100px;
+}
+.workspace .primary {
+  color: white;
+  background: var(--accent);
+}
+.file-list li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0;
+}
+.file-list span {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.destination {
+  overflow-wrap: anywhere;
+}
+.error {
+  color: #a3221c;
+  background: #ffebe6;
+  padding: 16px;
+}
 * {
   box-sizing: border-box;
 }

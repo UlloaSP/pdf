@@ -1,12 +1,14 @@
 # PDF Utils
 
-Base de una aplicación de utilidades PDF para Windows. React + TypeScript + Vite en el frontend, Tauri 2 + Rust como backend local. Sin servidor.
+Aplicación de utilidades PDF para Windows. React + TypeScript + Vite en el frontend, Tauri 2 + Rust como backend local y un worker Python empaquetado para los motores. Sin servidor obligatorio.
 
 El [plan de arquitectura](docs/architecture.md) contiene las decisiones, las 32 utilidades previstas y las fases de implementación.
 
 ## Estado
 
-Catálogo en español con búsqueda y filtros, conexión de diagnóstico al backend y workflows para MSI x64. Las operaciones PDF aún no están implementadas. La vista en navegador indica que no hay motor nativo.
+Catálogo en español con búsqueda, filtros y formularios por utilidad. Las utilidades integradas se activan al añadir sus módulos. Las operaciones que necesitan motores externos lo indican en su formulario. La vista de navegador permite consultar opciones; el procesamiento requiere la aplicación de escritorio.
+
+El [Gitflow](docs/gitflow.md) define ramas, PR y merges para cada petición. El [plan de implementación](docs/implementation-plan.md) recoge el reparto paralelo y los límites de esta entrega.
 
 ## Desarrollo
 
@@ -23,11 +25,22 @@ Abre `http://127.0.0.1:1420`. Para la aplicación de escritorio instala además 
 npm run desktop:dev
 ```
 
+Antes del primer arranque nativo, prepara el worker con Python 3.14:
+
+```powershell
+python -m venv .venv
+.venv/Scripts/python -m pip install -r engine/requirements.txt
+.venv/Scripts/python scripts/build-engine.py
+```
+
+Repite el empaquetado cuando cambien los motores. El MSI incluye este worker y su runtime Python.
+
 ## Comprobaciones y compilación
 
 ```powershell
 npm run check:version
 npm run build
+.venv/Scripts/python -m unittest discover -s engine/tests
 cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
 cargo test --manifest-path src-tauri/Cargo.toml
@@ -46,4 +59,4 @@ CI valida frontend y Rust, compila el MSI y lo conserva como artefacto. Release 
 
 El workflow usa `GITHUB_TOKEN` con escritura solo en el trabajo de publicación. Los instaladores iniciales no están firmados. No se han publicado releases ni añadido actualizaciones automáticas.
 
-La validación nativa se ejecutará en GitHub Actions: el equipo donde se inicializó el proyecto no tiene Rust instalado. El primer build resolverá las dependencias Rust; conviene incorporar el `Cargo.lock` generado y usar `--locked` antes de la primera distribución estable.
+`Cargo.lock` y `engine/requirements.txt` fijan las dependencias resueltas. CI ejecuta pruebas Python, empaqueta el worker y valida Rust antes de generar el MSI. Los motores adicionales se documentan por utilidad en `docs/features`.
