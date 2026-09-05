@@ -31,3 +31,9 @@ class ConversionTests(unittest.TestCase):
         self.assertIn("Hello & PDF", text)
         self.assertNotIn("secret", text)
         self.assertNotIn("Hidden", text)
+
+    def test_rejects_unsupported_glyphs(self):
+        self.source = self.source.with_suffix(".html")
+        self.source.write_text("<p>Україна 中文</p>", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "Windows-1252"):
+            feature.run([str(self.source)], str(self.out), {})

@@ -42,6 +42,10 @@ def run(inputs: list[str], output_dir: str, options: dict) -> list[str]:
     lines = [line.strip() for line in "".join(parser.parts).splitlines() if line.strip()]
     if not lines:
         raise ValueError("El HTML no contiene texto visible.")
+    try:
+        "".join(lines).encode("cp1252")
+    except UnicodeEncodeError:
+        raise ValueError("Esta conversión admite texto occidental Windows-1252. El HTML contiene caracteres no representables.") from None
     target = out / "converted.pdf"
     styles = getSampleStyleSheet()
     SimpleDocTemplate(str(target)).build([Paragraph(escape(line), styles["BodyText"]) for line in lines])
