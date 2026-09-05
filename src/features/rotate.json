@@ -1,0 +1,30 @@
+{
+  "id": "rotate",
+  "name": "Rotar PDF",
+  "description": "Gira las páginas seleccionadas en sentido horario.",
+  "category": "Páginas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "pages",
+      "label": "Páginas (vacío = todas; ejemplo 1,3-5)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "angle",
+      "label": "Grados",
+      "type": "select",
+      "default": "90",
+      "options": [
+        "90",
+        "180",
+        "270"
+      ]
+    }
+  ],
+  "requirements": []
+}
