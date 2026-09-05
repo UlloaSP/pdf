@@ -1,5 +1,7 @@
 # Plan de PDF Utils
 
+Este documento conserva la decisión inicial. La implementación posterior y el worker Python empaquetado se describen en [el plan de entrega](implementation-plan.md); el flujo vigente de ramas y PR está en [Gitflow](gitflow.md).
+
 ## Alcance de esta entrega
 
 Inicializar la aplicación de escritorio, su interfaz, un comando nativo de diagnóstico y los workflows de CI y releases MSI. Las 32 utilidades de la referencia forman el alcance futuro. Ninguna procesa documentos todavía.
