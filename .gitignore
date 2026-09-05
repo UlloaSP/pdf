@@ -8,3 +8,10 @@ src-tauri/gen/schemas/
 !.env.example
 .playwright-cli/
 output/
+.venv/
+__pycache__/
+*.pyc
+engine/build/
+engine/dist/
+*.spec
+src-tauri/binaries/*.exe
