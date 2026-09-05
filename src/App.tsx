@@ -1,8 +1,50 @@
 import { useEffect, useState } from "react";
 import { getAppInfo } from "./native";
 import { categories, tools, type Category } from "./tools";
+import { features, type Feature } from "./features";
+import { Workspace } from "./Workspace";
+
+const ids = [
+  "merge",
+  "split",
+  "compress",
+  "pdf_to_word",
+  "pdf_to_powerpoint",
+  "pdf_to_excel",
+  "word_to_pdf",
+  "powerpoint_to_pdf",
+  "excel_to_pdf",
+  "edit",
+  "pdf_to_jpg",
+  "jpg_to_pdf",
+  "sign",
+  "watermark",
+  "rotate",
+  "html_to_pdf",
+  "unlock",
+  "protect",
+  "organize",
+  "pdfa",
+  "repair",
+  "page_numbers",
+  "scan",
+  "ocr",
+  "compare",
+  "redact",
+  "crop",
+  "forms",
+  "summarize",
+  "translate",
+  "pdf_to_markdown",
+  "workflow",
+];
+const catalog = tools.map((tool, index) => ({
+  ...tool,
+  feature: features.find((feature) => feature.id === ids[index]),
+}));
 
 export function App() {
+  const [selected, setSelected] = useState<Feature | null>(null);
   const [category, setCategory] = useState<Category>("Todas");
   const [query, setQuery] = useState("");
   const [runtime, setRuntime] = useState("Comprobando conexión local…");
@@ -29,13 +71,24 @@ export function App() {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLocaleLowerCase("es");
-  const visible = tools.filter(
+  const visible = catalog.filter(
     (tool) =>
       (category === "Todas" || tool.category === category) &&
       normalize(`${tool.name} ${tool.description}`).includes(
         normalize(query.trim()),
       ),
   );
+
+  if (selected)
+    return (
+      <main className="workspace-shell">
+        <Workspace
+          key={selected.id}
+          feature={selected}
+          onClose={() => setSelected(null)}
+        />
+      </main>
+    );
 
   return (
     <div className="app-shell">
@@ -71,7 +124,7 @@ export function App() {
       <main id="main">
         <header className="topbar">
           <span>Biblioteca de herramientas</span>
-          <span className="build-label">BASE INICIAL</span>
+          <span className="build-label">DESARROLLO</span>
         </header>
         <section className="intro" aria-labelledby="title">
           <p className="eyebrow">DOCUMENTOS EN ORDEN</p>
@@ -79,10 +132,11 @@ export function App() {
           <p>Organiza, convierte y prepara tus documentos desde Windows.</p>
         </section>
         <div className="notice">
-          <strong>Estamos preparando las herramientas.</strong>
+          <strong>Procesamiento local de documentos.</strong>
           <span>
-            Esta versión permite explorar el catálogo. El procesamiento de
-            archivos llegará en las siguientes fases.
+            Elige una herramienta disponible para seleccionar archivos y guardar
+            el resultado en una nueva carpeta. Las dependencias adicionales se
+            indican en cada utilidad.
           </span>
         </div>
         <div className="catalog-heading">
@@ -99,9 +153,7 @@ export function App() {
         </div>
         <p className="result-count" role="status">
           {visible.length}{" "}
-          {visible.length === 1
-            ? "herramienta planificada"
-            : "herramientas planificadas"}
+          {visible.length === 1 ? "herramienta" : "herramientas"}
         </p>
         <section className="tool-grid" aria-label="Catálogo de utilidades">
           {visible.map((tool) => (
@@ -110,10 +162,24 @@ export function App() {
                 <span className="file-icon" aria-hidden="true">
                   PDF
                 </span>
-                <span className="planned">Planificada</span>
+                <span className="planned">
+                  {tool.feature
+                    ? tool.feature.requirements.length
+                      ? "Motor adicional"
+                      : "Disponible"
+                    : "Planificada"}
+                </span>
               </div>
               <h3>{tool.name}</h3>
               <p>{tool.description}</p>
+              {tool.feature ? (
+                <button
+                  className="open-tool"
+                  onClick={() => setSelected(tool.feature!)}
+                >
+                  Abrir {tool.name}
+                </button>
+              ) : null}
             </article>
           ))}
         </section>
