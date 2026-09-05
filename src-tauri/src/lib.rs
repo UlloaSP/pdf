@@ -3,6 +3,7 @@ use std::io::{Read, Write};
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
+use tauri::Manager;
 
 #[derive(Default)]
 struct JobState(Arc<Mutex<Option<u32>>>);
@@ -69,13 +70,19 @@ fn execute_job(
     if payload.len() > 2_000_000 {
         return Err("Solicitud demasiado grande.".into());
     }
-    let mut child = worker_command()?
+    let mut command = worker_command()?;
+    let mut job = active.lock().map_err(|e| e.to_string())?;
+    if *job == Some(u32::MAX) {
+        return Err("Operación cancelada.".into());
+    }
+    let mut child = command
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .spawn()
         .map_err(|e| e.to_string())?;
-    *active.lock().map_err(|e| e.to_string())? = Some(child.id());
+    *job = Some(child.id());
+    drop(job);
     if let Some(mut stdin) = child.stdin.take() {
         if let Err(error) = stdin.write_all(&payload) {
             let _ = child.kill();
@@ -129,8 +136,10 @@ fn stop_process(pid: u32) {
 
 #[tauri::command]
 fn cancel_job(state: tauri::State<'_, JobState>) -> Result<(), String> {
-    if let Some(pid) = *state.0.lock().map_err(|e| e.to_string())? {
-        if pid > 0 {
+    let mut job = state.0.lock().map_err(|e| e.to_string())?;
+    if let Some(pid) = *job {
+        *job = Some(u32::MAX);
+        if pid > 0 && pid != u32::MAX {
             stop_process(pid);
         }
     }
@@ -156,6 +165,11 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .manage(JobState::default())
         .invoke_handler(tauri::generate_handler![get_app_info, run_tool, cancel_job])
-        .run(tauri::generate_context!())
-        .expect("No se ha podido iniciar PDF Utils");
+        .build(tauri::generate_context!())
+        .expect("No se ha podido iniciar PDF Utils")
+        .run(|app, event| {
+            if matches!(event, tauri::RunEvent::Exit) {
+                let _ = cancel_job(app.state::<JobState>());
+            }
+        });
 }

@@ -11,7 +11,7 @@
 3. Implementa un recorrido usable de interfaz a motor y pruebas con documentos reales o generados. Distingue dependencias opcionales de capacidades integradas.
 4. Ejecuta comprobaciones. Haz commits Conventional Commits y push con upstream.
 5. Abre una PR hacia `develop` con problema, comportamiento, pruebas y límites. Usa un archivo para el cuerpo si llamas a gh.
-6. Solicita revisión independiente, corrige hallazgos importantes y espera CI. Si develop cambió, intégralo en la rama, resuelve conflictos y repite los checks afectados.
+6. Solicita revisión independiente, corrige hallazgos importantes y espera CI. Si develop cambió en infraestructura compartida, intégralo en la rama, resuelve conflictos y repite los checks afectados. Las utilidades que solo añaden archivos propios pueden integrarse por lote después de probar su unión en un worktree local separado. Registra los heads probados y ejecuta el CI completo sobre develop al cerrar el lote.
 7. El coordinador hace merge commit en develop cuando revisión y checks pasan. Conserva las ramas publicadas durante esta entrega para que puedan inspeccionarse.
 8. Actualiza el registro de entrega con PR y estado real. Termina en develop con el árbol limpio.
 
