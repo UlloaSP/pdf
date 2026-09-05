@@ -1,0 +1,12 @@
+{
+  "id": "pdf_to_word",
+  "name": "PDF a Word",
+  "description": "Extrae texto editable a DOCX, con saltos entre páginas. No conserva columnas, imágenes ni la maquetación; los escaneos requieren OCR previo.",
+  "category": "Conversión",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": []
+}

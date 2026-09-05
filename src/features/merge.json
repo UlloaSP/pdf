@@ -1,0 +1,12 @@
+{
+  "id": "merge",
+  "name": "Unir PDF",
+  "description": "Combina documentos en el orden seleccionado.",
+  "category": "Páginas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": true,
+  "fields": [],
+  "requirements": []
+}

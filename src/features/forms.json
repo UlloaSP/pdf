@@ -1,0 +1,35 @@
+{
+  "id": "forms",
+  "name": "Formularios PDF",
+  "description": "Crea campos de texto y casillas o rellena un AcroForm existente con valores JSON.",
+  "category": "Edición",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "mode",
+      "label": "Acción",
+      "type": "select",
+      "default": "Rellenar",
+      "options": [
+        "Rellenar",
+        "Crear campos"
+      ]
+    },
+    {
+      "key": "values",
+      "label": "Valores JSON por nombre de campo",
+      "type": "textarea",
+      "default": "{\"nombre\": \"Ana\"}"
+    },
+    {
+      "key": "definitions",
+      "label": "Campos nuevos JSON (coordenadas en pt desde abajo a la izquierda)",
+      "type": "textarea",
+      "default": "[{\"name\":\"nombre\",\"type\":\"text\",\"page\":1,\"x\":36,\"y\":100,\"width\":160,\"height\":24},{\"name\":\"acepto\",\"type\":\"checkbox\",\"page\":1,\"x\":36,\"y\":60,\"width\":20}]"
+    }
+  ],
+  "requirements": []
+}
