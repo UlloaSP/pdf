@@ -1,0 +1,19 @@
+{
+  "id": "pdf_to_jpg",
+  "name": "PDF a JPG",
+  "description": "Renderiza cada página a JPG con resolución de 72 a 300 DPI. No extrae imágenes incrustadas.",
+  "category": "Conversión",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "dpi",
+      "label": "Resolución DPI",
+      "type": "number",
+      "default": 144
+    }
+  ],
+  "requirements": []
+}
