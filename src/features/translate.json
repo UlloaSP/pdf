@@ -1,0 +1,31 @@
+{
+  "id": "translate",
+  "name": "Traducir PDF",
+  "description": "Traduce texto con Ollama local y genera un PDF con maquetación nueva.",
+  "category": "Avanzadas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "model",
+      "label": "Modelo local instalado en Ollama",
+      "type": "text"
+    },
+    {
+      "key": "language",
+      "label": "Idioma de destino",
+      "type": "text",
+      "default": "español"
+    },
+    {
+      "key": "font",
+      "label": "Fuente TTF opcional para cubrir caracteres del idioma",
+      "type": "text"
+    }
+  ],
+  "requirements": [
+    "Ollama local en 127.0.0.1:11434 y modelo instalado"
+  ]
+}

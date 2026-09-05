@@ -1,0 +1,20 @@
+{
+  "id": "pdfa",
+  "name": "PDF a PDF/A",
+  "description": "Convierte a PDF/A-2b con Ghostscript y un perfil ICC RGB.",
+  "category": "Conversión",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "icc_profile",
+      "label": "Ruta al perfil ICC RGB (default_rgb.icc)",
+      "type": "text"
+    }
+  ],
+  "requirements": [
+    "Ghostscript en PATH y perfil ICC RGB"
+  ]
+}
