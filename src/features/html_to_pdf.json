@@ -1,0 +1,13 @@
+{
+  "id": "html_to_pdf",
+  "name": "HTML a PDF",
+  "description": "Convierte texto de un archivo HTML local a PDF. Omite scripts y estilos; no reproduce CSS, imágenes, JavaScript ni páginas web por URL.",
+  "category": "Conversión",
+  "extensions": [
+    "html",
+    "htm"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": []
+}
