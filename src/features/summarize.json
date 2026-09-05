@@ -1,0 +1,20 @@
+{
+  "id": "summarize",
+  "name": "Resumir PDF con IA",
+  "description": "Resume texto por fragmentos usando un modelo local de Ollama.",
+  "category": "Avanzadas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "model",
+      "label": "Modelo local instalado en Ollama",
+      "type": "text"
+    }
+  ],
+  "requirements": [
+    "Ollama local en 127.0.0.1:11434 y modelo instalado"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "excel_to_pdf",
+  "name": "Excel a PDF",
+  "description": "Convierte con LibreOffice instalado. La paginación y las fuentes pueden variar respecto a Microsoft Office. No requiere subir archivos.",
+  "category": "Conversión",
+  "extensions": [
+    "xls",
+    "xlsx",
+    "ods"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": [
+    "LibreOffice"
+  ]
+}

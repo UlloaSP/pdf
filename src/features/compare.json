@@ -1,0 +1,12 @@
+{
+  "id": "compare",
+  "name": "Comparar PDF",
+  "description": "Compara dos documentos visualmente y muestra páginas y diferencias.",
+  "category": "Avanzadas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": true,
+  "fields": [],
+  "requirements": []
+}
