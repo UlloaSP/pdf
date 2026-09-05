@@ -1,5 +1,7 @@
 # Entrega de utilidades y Gitflow
 
+Las 32 utilidades del reparto se han integrado mediante sus PR individuales. El [registro de entrega](delivery.md) documenta alcance, limitaciones y validación.
+
 1. Commit inicial en main y publicación de develop.
 2. PR de infraestructura: Gitflow persistente, formularios declarativos, selección de archivos, worker aislado, empaquetado Python, pruebas y CI.
 3. Tres agentes en worktrees independientes, una rama y PR por utilidad.

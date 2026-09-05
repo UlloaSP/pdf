@@ -6,7 +6,7 @@ El [plan de arquitectura](docs/architecture.md) contiene las decisiones, las 32 
 
 ## Estado
 
-Catálogo en español con búsqueda, filtros y formularios por utilidad. Las utilidades integradas se activan al añadir sus módulos. Las operaciones que necesitan motores externos lo indican en su formulario. La vista de navegador permite consultar opciones; el procesamiento requiere la aplicación de escritorio.
+32 utilidades con búsqueda, filtros y formularios en español. Las operaciones que necesitan motores externos lo indican en su formulario. La vista de navegador permite consultar opciones; el procesamiento requiere la aplicación de escritorio. Consulta el [registro de entrega](docs/delivery.md) para ver las PR integradas, el alcance real y los límites de cada utilidad.
 
 El [Gitflow](docs/gitflow.md) define ramas, PR y merges para cada petición. El [plan de implementación](docs/implementation-plan.md) recoge el reparto paralelo y los límites de esta entrega.
 
