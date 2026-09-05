@@ -1,0 +1,30 @@
+{
+  "id": "scan",
+  "name": "Escanear a PDF",
+  "description": "Adquiere una página mediante un escáner WIA de Windows o importa una captura JPG/PNG. El modo WIA abre el diálogo de Windows y requiere un dispositivo compatible. Sin captura móvil.",
+  "category": "Avanzadas",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "bmp",
+    "tif",
+    "tiff"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "mode",
+      "label": "Origen",
+      "type": "select",
+      "default": "Importar captura",
+      "options": [
+        "Importar captura",
+        "Escáner WIA"
+      ]
+    }
+  ],
+  "requirements": [
+    "Escáner WIA compatible para adquisición directa"
+  ]
+}

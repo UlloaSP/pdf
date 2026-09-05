@@ -26,7 +26,9 @@ def main():
     available = {path.stem for path in (root / "engine/features").glob("*.py") if not path.name.startswith("_")}
     completed = []
     with tempfile.TemporaryDirectory(prefix="pdf-worker-smoke-") as temp:
-        folder = Path(temp)
+        # Windows CI can expose TEMP with an 8.3 alias (RUNNER~1). Match the
+        # canonical paths returned by the worker before checking confinement.
+        folder = Path(temp).resolve()
         source = folder / "entrada.pdf"
         picture = folder / "imagen.png"
         form = folder / "formulario.pdf"
