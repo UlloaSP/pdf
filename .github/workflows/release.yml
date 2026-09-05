@@ -20,6 +20,7 @@ jobs:
           version: "0.3.0"
           cache: true
           run-install: false
+      - run: vp install --frozen-lockfile
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
@@ -35,7 +36,6 @@ jobs:
       - run: python -m unittest discover -s engine/tests
       - run: python scripts/build-engine.py
       - run: python scripts/smoke-engine.py
-      - run: vp install --frozen-lockfile
       - run: vp run check
       - run: vp run check:version
       - run: vp run build

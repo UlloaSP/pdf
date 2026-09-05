@@ -9,7 +9,6 @@
   },
   "scripts": {
     "dev": "vp dev",
-    "preinstall": "node scripts/require-pnpm.mjs",
     "check": "vp check --no-fmt",
     "typecheck": "tsc --noEmit",
     "build": "vp run typecheck && vp build",
