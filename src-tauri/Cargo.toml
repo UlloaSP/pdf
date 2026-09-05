@@ -1,0 +1,18 @@
+[package]
+name = "pdf-utils"
+version = "0.1.0"
+description = "Utilidades PDF de escritorio para Windows"
+authors = ["Pablo Ulloa Santín"]
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "pdf_utils_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
