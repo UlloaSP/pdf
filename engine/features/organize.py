@@ -56,6 +56,5 @@ def run(inputs, output_dir, options):
     reader = read_one(inputs)
     selected = pages(options.get("pages", ""), len(reader.pages))
     writer = PdfWriter()
-    for index in selected:
-        writer.add_page(reader.pages[index])
+    writer.append(reader, pages=selected)
     return [save(writer, output_dir, "organizado.pdf")]
