@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import type { Feature } from "./features";
@@ -12,15 +12,15 @@ interface Result {
 export function Workspace({
   feature,
   onClose,
+  onBusyChange,
 }: {
   feature: Feature;
   onClose: () => void;
+  onBusyChange: (busy: boolean) => void;
 }) {
   const [inputs, setInputs] = useState<string[]>([]);
   const [destination, setDestination] = useState("");
-  const [options, setOptions] = useState<
-    Record<string, string | number | boolean>
-  >(() =>
+  const [options, setOptions] = useState<Record<string, string | number | boolean>>(() =>
     Object.fromEntries(
       feature.fields.map((field) => [
         field.key,
@@ -29,6 +29,9 @@ export function Workspace({
     ),
   );
   const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    onBusyChange(busy);
+  }, [busy, onBusyChange]);
   const [error, setError] = useState("");
   const [outputs, setOutputs] = useState<string[]>([]);
   async function chooseFiles() {
@@ -64,8 +67,7 @@ export function Workspace({
           options,
         },
       });
-      if (!result.ok)
-        throw new Error(result.error ?? "No se pudo completar la operación.");
+      if (!result.ok) throw new Error(result.error ?? "No se pudo completar la operación.");
       setOutputs(result.outputs);
     } catch (reason) {
       setError(String(reason));
@@ -82,8 +84,8 @@ export function Workspace({
       <p>{feature.description}</p>
       {feature.requirements.length ? (
         <p className="notice">
-          Motor adicional necesario: {feature.requirements.join(", ")}. Debe
-          estar instalado para ejecutar esta utilidad.
+          Motor adicional necesario: {feature.requirements.join(", ")}. Debe estar instalado para
+          ejecutar esta utilidad.
         </p>
       ) : null}
       {!isTauri() ? (
@@ -104,10 +106,7 @@ export function Workspace({
                 onClick={() =>
                   setInputs((current) => {
                     const next = [...current];
-                    [next[index - 1], next[index]] = [
-                      next[index],
-                      next[index - 1],
-                    ];
+                    [next[index - 1], next[index]] = [next[index], next[index - 1]];
                     return next;
                   })
                 }
@@ -116,11 +115,7 @@ export function Workspace({
               </button>
               <button
                 aria-label={`Quitar archivo ${index + 1}`}
-                onClick={() =>
-                  setInputs((current) =>
-                    current.filter((_, at) => at !== index),
-                  )
-                }
+                onClick={() => setInputs((current) => current.filter((_, at) => at !== index))}
               >
                 ×
               </button>
@@ -157,16 +152,8 @@ export function Workspace({
             ) : (
               <input
                 type={field.type}
-                checked={
-                  field.type === "checkbox"
-                    ? Boolean(options[field.key])
-                    : undefined
-                }
-                value={
-                  field.type === "checkbox"
-                    ? undefined
-                    : String(options[field.key])
-                }
+                checked={field.type === "checkbox" ? Boolean(options[field.key]) : undefined}
+                value={field.type === "checkbox" ? undefined : String(options[field.key])}
                 onChange={(event) =>
                   setOptions((current) => ({
                     ...current,
@@ -183,9 +170,7 @@ export function Workspace({
           </label>
         ))}
         <button onClick={chooseDestination}>Elegir carpeta de destino</button>
-        <p className="destination">
-          {destination || "Sin carpeta seleccionada"}
-        </p>
+        <p className="destination">{destination || "Sin carpeta seleccionada"}</p>
         <p>Se creará una subcarpeta nueva. Los originales se conservan.</p>
         <button className="primary" onClick={run} disabled={!destination}>
           Ejecutar {feature.name}
@@ -194,11 +179,7 @@ export function Workspace({
       {busy ? (
         <div role="status">
           <progress /> Procesando…{" "}
-          <button
-            onClick={() =>
-              invoke("cancel_job").catch((reason) => setError(String(reason)))
-            }
-          >
+          <button onClick={() => invoke("cancel_job").catch((reason) => setError(String(reason)))}>
             Cancelar
           </button>
         </div>
