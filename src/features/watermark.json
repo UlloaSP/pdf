@@ -1,7 +1,7 @@
 {
   "id": "watermark",
   "name": "Marca de agua",
-  "description": "Añade una marca de texto centrada a las páginas elegidas.",
+  "description": "Añade una marca de texto o imagen centrada con opacidad ajustable.",
   "category": "Edición",
   "extensions": [
     "pdf"
@@ -31,6 +31,18 @@
       "label": "Opacidad (0 a 1)",
       "type": "number",
       "default": 0.25
+    },
+    {
+      "key": "image_path",
+      "label": "Ruta de imagen opcional (sustituye al texto)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "image_width",
+      "label": "Ancho de imagen (pt)",
+      "type": "number",
+      "default": 200
     }
   ],
   "requirements": []

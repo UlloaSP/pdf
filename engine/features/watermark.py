@@ -58,6 +58,8 @@ from pypdf import Transformation
 
 
 def overlay_page(page, draw):
+    if page.rotation and page.get('/Annots'):
+        raise ValueError("Las páginas rotadas con anotaciones requieren aplanar sus anotaciones antes de superponer contenido.")
     page.transfer_rotation_to_content()
     box = page.cropbox
     width, height = float(box.width), float(box.height)
@@ -81,13 +83,29 @@ def latin_text(value):
 
 def run(inputs, output_dir, options):
     reader = read_one(inputs)
-    text = latin_text(options.get("text", "CONFIDENCIAL"))
+    image_path = str(options.get('image_path','')).strip()
+    text = latin_text(options.get("text", "CONFIDENCIAL")) if not image_path else ''
+    stamp_image = None
+    if image_path:
+        from PIL import Image, ImageOps
+        from reportlab.lib.utils import ImageReader
+        if not Path(image_path).is_file(): raise ValueError("La imagen de marca no existe.")
+        with Image.open(image_path) as image:
+            stamp_image = ImageReader(ImageOps.exif_transpose(image).convert('RGBA'))
+        image_width = number(options,'image_width',200,1)
+        pixel_width,pixel_height=stamp_image.getSize()
+        image_height=image_width*pixel_height/pixel_width
     size = number(options, "font_size", 32, 1)
     opacity = number(options, "opacity", .25)
     if opacity > 1:
         raise ValueError("La opacidad debe estar entre 0 y 1.")
     writer = PdfWriter(clone_from=reader)
     def draw(layer, width, height):
+        layer.setFillAlpha(opacity)
+        if stamp_image:
+            if image_width > width or image_height > height: raise ValueError("La marca de imagen no cabe en la página.")
+            layer.drawImage(stamp_image,(width-image_width)/2,(height-image_height)/2,image_width,image_height,mask='auto')
+            return
         fitted = min(size, (width - 24) / max(layer.stringWidth(text, "Helvetica", 1), 1))
         if fitted <= 0: raise ValueError("Página demasiado estrecha.")
         layer.setFont("Helvetica", fitted)
