@@ -1,0 +1,12 @@
+{
+  "id": "pdf_to_excel",
+  "name": "PDF a Excel",
+  "description": "Exporta líneas de texto a XLSX, una hoja por página. Divide columnas por tabuladores o varios espacios. No detecta tablas gráficas ni conserva fórmulas.",
+  "category": "Conversión",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": []
+}
