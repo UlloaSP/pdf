@@ -58,6 +58,8 @@ from pypdf import Transformation
 
 
 def overlay_page(page, draw):
+    if page.rotation and page.get('/Annots'):
+        raise ValueError("Las páginas rotadas con anotaciones requieren aplanar sus anotaciones antes de superponer contenido.")
     page.transfer_rotation_to_content()
     box = page.cropbox
     width, height = float(box.width), float(box.height)
