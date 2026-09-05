@@ -1,0 +1,21 @@
+{
+  "id": "ocr",
+  "name": "OCR PDF",
+  "description": "Crea un PDF de imágenes con texto reconocible y buscable.",
+  "category": "Avanzadas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "language",
+      "label": "Idiomas Tesseract instalados (spa, eng, spa+eng)",
+      "type": "text",
+      "default": "eng"
+    }
+  ],
+  "requirements": [
+    "Tesseract e idiomas instalados en PATH"
+  ]
+}
