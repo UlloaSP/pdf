@@ -1,0 +1,19 @@
+{
+  "id": "workflow",
+  "name": "Crear un flujo",
+  "description": "Encadena utilidades registradas con opciones JSON y carpetas por paso.",
+  "category": "Avanzadas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "steps",
+      "label": "Pasos JSON: la salida de cada paso alimenta el siguiente",
+      "type": "textarea",
+      "default": "[{\"feature\":\"compress\",\"options\":{}},{\"feature\":\"rotate\",\"options\":{\"angle\":90}}]"
+    }
+  ],
+  "requirements": []
+}

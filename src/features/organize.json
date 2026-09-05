@@ -1,0 +1,19 @@
+{
+  "id": "organize",
+  "name": "Organizar PDF",
+  "description": "Reordena, duplica o elimina páginas mediante una lista.",
+  "category": "Páginas",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "pages",
+      "label": "Orden de páginas (ejemplo 3,1,1-2)",
+      "type": "text",
+      "default": ""
+    }
+  ],
+  "requirements": []
+}
