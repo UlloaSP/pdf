@@ -1,0 +1,25 @@
+{
+  "id": "jpg_to_pdf",
+  "name": "Imagen a PDF",
+  "description": "Convierte imágenes en páginas PDF en el orden seleccionado.",
+  "category": "Conversión",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "bmp",
+    "tif",
+    "tiff"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "dpi",
+      "label": "Resolución (DPI)",
+      "type": "number",
+      "default": 150
+    }
+  ],
+  "requirements": []
+}
