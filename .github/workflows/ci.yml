@@ -26,13 +26,15 @@ jobs:
           $native = 'true'
           if ($env:BASE_SHA) {
             $changed = git diff --name-only $env:BASE_SHA $env:HEAD_SHA
-            if (-not ($changed -match '^(src-tauri/|package|scripts/|\.github/)')) { $native = 'false' }
+            if (-not ($changed -match '^(src-tauri/|package|pnpm-|vite.config|scripts/|\.github/)')) { $native = 'false' }
           }
           "CHECK_NATIVE=$native" | Out-File -FilePath $env:GITHUB_ENV -Append
-      - uses: actions/setup-node@v4
+      - uses: voidzero-dev/setup-vp@v1.19.0
         with:
           node-version: "24"
-          cache: npm
+          version: "0.3.0"
+          cache: true
+          run-install: false
       - uses: dtolnay/rust-toolchain@stable
         if: env.CHECK_NATIVE == 'true'
         with:
@@ -50,16 +52,17 @@ jobs:
       - run: python -m unittest discover -s engine/tests
       - run: python scripts/build-engine.py
       - run: python scripts/smoke-engine.py
-      - run: npm ci
-      - run: npm run check:version
-      - run: npm run build
+      - run: vp install --frozen-lockfile
+      - run: vp run check
+      - run: vp run check:version
+      - run: vp run build
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
         if: env.CHECK_NATIVE == 'true'
       - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
         if: env.CHECK_NATIVE == 'true'
       - run: cargo test --manifest-path src-tauri/Cargo.toml
         if: env.CHECK_NATIVE == 'true'
-      - run: npm run desktop:build
+      - run: vp run desktop:build
         if: env.CHECK_NATIVE == 'true'
       - uses: actions/upload-artifact@v4
         if: env.CHECK_NATIVE == 'true'
