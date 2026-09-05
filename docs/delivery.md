@@ -8,6 +8,8 @@ Se han preparado 32 utilidades con formulario y motor local, cada una en su rama
 
 ## Ramas y utilidades
 
+La rama `feature/zen-shell` incorpora el [marco y navegación tipo Zen](zen-shell.md), con paneles superior e izquierdo que se ocultan automáticamente y una vista de herramientas sin los textos promocionales o de desarrollo.
+
 La [PR #38](https://github.com/UlloaSP/pdf/pull/38) migra el frontend, los comandos Tauri y los workflows a Vite+ 0.3.0 con pnpm 11.1.3. La instalación congelada, lint, tipos, build web y MSI pasan localmente; el servidor de desarrollo responde en el puerto 1420. `AGENTS.md` y el README conservan los nuevos comandos. CI y la revisión final quedan registrados en la PR.
 
 Todas las ramas de esta tabla tienen el prefijo `feature/`. Todas las PRs enlazadas están fusionadas en develop mediante merge commit. Las ramas publicadas se conservan para inspección.
