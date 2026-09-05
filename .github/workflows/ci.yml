@@ -1,7 +1,7 @@
 name: Validate Windows app
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -25,6 +25,14 @@ jobs:
       - uses: swatinem/rust-cache@v2
         with:
           workspaces: src-tauri -> target
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: engine/requirements.txt
+      - run: python -m pip install -r engine/requirements.txt
+      - run: python -m unittest discover -s engine/tests
+      - run: python scripts/build-engine.py
       - run: npm ci
       - run: npm run check:version
       - run: npm run build
