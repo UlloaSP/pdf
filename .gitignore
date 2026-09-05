@@ -1,4 +1,5 @@
 node_modules/
+.vite-plus/
 dist/
 src-tauri/target/
 src-tauri/gen/schemas/

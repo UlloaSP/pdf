@@ -14,10 +14,13 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: voidzero-dev/setup-vp@v1.19.0
         with:
           node-version: "24"
-          cache: npm
+          version: "0.3.0"
+          cache: true
+          run-install: false
+      - run: vp install --frozen-lockfile
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
@@ -33,13 +36,13 @@ jobs:
       - run: python -m unittest discover -s engine/tests
       - run: python scripts/build-engine.py
       - run: python scripts/smoke-engine.py
-      - run: npm ci
-      - run: npm run check:version
-      - run: npm run build
+      - run: vp run check
+      - run: vp run check:version
+      - run: vp run build
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
       - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
       - run: cargo test --manifest-path src-tauri/Cargo.toml
-      - run: npm run desktop:build
+      - run: vp run desktop:build
       - uses: actions/upload-artifact@v4
         with:
           name: pdf-utils-windows-x64-msi
