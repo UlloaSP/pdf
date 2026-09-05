@@ -1,7 +1,7 @@
 {
   "id": "sign",
   "name": "Firma visible",
-  "description": "Coloca el nombre del firmante. No es una firma digital criptográfica.",
+  "description": "Superpone texto o una imagen de firma. No es una firma digital criptográfica.",
   "category": "Seguridad",
   "extensions": [
     "pdf"
@@ -31,6 +31,18 @@
       "label": "Desde abajo (pt)",
       "type": "number",
       "default": 36
+    },
+    {
+      "key": "image_path",
+      "label": "Ruta de imagen opcional (sustituye al texto)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "image_width",
+      "label": "Ancho de imagen (pt)",
+      "type": "number",
+      "default": 160
     }
   ],
   "requirements": []

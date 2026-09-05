@@ -58,6 +58,8 @@ from pypdf import Transformation
 
 
 def overlay_page(page, draw):
+    if page.rotation and page.get('/Annots'):
+        raise ValueError("Las páginas rotadas con anotaciones requieren aplanar sus anotaciones antes de superponer contenido.")
     page.transfer_rotation_to_content()
     box = page.cropbox
     width, height = float(box.width), float(box.height)
@@ -81,17 +83,33 @@ def latin_text(value):
 
 def run(inputs, output_dir, options):
     reader = read_one(inputs)
-    name = latin_text(options.get("name", ""))
+    image_path = str(options.get('image_path','')).strip()
+    name = latin_text(options.get("name", "")) if not image_path else ''
+    signature = None
+    if image_path:
+        from PIL import Image, ImageOps
+        from reportlab.lib.utils import ImageReader
+        if not Path(image_path).is_file(): raise ValueError("La imagen de firma no existe.")
+        with Image.open(image_path) as image:
+            signature = ImageReader(ImageOps.exif_transpose(image).convert('RGBA'))
+        image_width = number(options,'image_width',160,1)
+        pixel_width,pixel_height = signature.getSize()
+        image_height = image_width * pixel_height / pixel_width
     page = number(options, "page", 1, 1)
     if not page.is_integer() or page > len(reader.pages): raise ValueError("Página inválida.")
     x, y = number(options,"x",36), number(options,"y",36)
     writer = PdfWriter(clone_from=reader)
     def draw(layer, width, height):
         label = "Firma visible (sin certificado digital)"
-        if x + max(layer.stringWidth(name,"Helvetica-Oblique",20),layer.stringWidth(label,"Helvetica",8)) > width or y < 14 or y+22 > height:
+        mark_width = image_width if signature else layer.stringWidth(name,"Helvetica-Oblique",20)
+        mark_height = image_height if signature else 22
+        if x + max(mark_width,layer.stringWidth(label,"Helvetica",8)) > width or y < 14 or y+mark_height > height:
             raise ValueError("La firma no cabe en la posición elegida.")
-        layer.setFont("Helvetica-Oblique",20)
-        layer.drawString(x,y,name)
+        if signature:
+            layer.drawImage(signature,x,y,image_width,image_height,mask='auto')
+        else:
+            layer.setFont("Helvetica-Oblique",20)
+            layer.drawString(x,y,name)
         layer.setFont("Helvetica",8)
         layer.drawString(x,y-12,label)
     overlay_page(writer.pages[int(page)-1],draw)
