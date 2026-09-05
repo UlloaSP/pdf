@@ -38,3 +38,15 @@ class ConversionTests(unittest.TestCase):
             result = feature.run([], str(self.out), {"mode": "Escáner WIA"})
         self.assertTrue(Path(result[0]).is_file())
         self.assertFalse((self.out / "wia-capture.bmp").exists())
+
+    @unittest.skipUnless(feature.os.name == "nt", "WIA requires Windows")
+    def test_wia_hides_console(self):
+        from subprocess import CompletedProcess, CREATE_NO_WINDOW
+        target = self.root / "capture.bmp"
+        def capture(command, **kwargs):
+            self.assertEqual(kwargs["creationflags"], CREATE_NO_WINDOW)
+            self.assertEqual(kwargs["timeout"], 180)
+            target.write_bytes(b"capture")
+            return CompletedProcess(command, 0)
+        with patch.object(feature.subprocess, "run", side_effect=capture):
+            feature.acquire(target)

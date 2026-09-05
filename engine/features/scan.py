@@ -9,7 +9,7 @@ def acquire(target):
     env = os.environ.copy()
     env["PDF_SCAN_TARGET"] = str(target.resolve())
     try:
-        result = subprocess.run(["powershell.exe", "-NoProfile", "-STA", "-Command", script], env=env, capture_output=True, timeout=180)
+        result = subprocess.run(["powershell.exe", "-NoProfile", "-STA", "-Command", script], env=env, capture_output=True, timeout=180, creationflags=subprocess.CREATE_NO_WINDOW)
     except subprocess.TimeoutExpired:
         raise ValueError("La adquisición superó 180 segundos.")
     if result.returncode or not target.is_file():
