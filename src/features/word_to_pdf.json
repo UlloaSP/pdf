@@ -1,0 +1,16 @@
+{
+  "id": "word_to_pdf",
+  "name": "Word a PDF",
+  "description": "Convierte con LibreOffice instalado. La paginación y las fuentes pueden variar respecto a Microsoft Office. No requiere subir archivos.",
+  "category": "Conversión",
+  "extensions": [
+    "doc",
+    "docx",
+    "odt"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": [
+    "LibreOffice"
+  ]
+}
