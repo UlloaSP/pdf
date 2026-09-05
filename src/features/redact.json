@@ -1,0 +1,25 @@
+{
+  "id": "redact",
+  "name": "Censurar PDF",
+  "description": "Elimina regiones mediante rasterización y crea un PDF nuevo sin objetos originales.",
+  "category": "Seguridad",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "regions",
+      "label": "Regiones JSON. Puntos desde arriba a la izquierda; página desde 1",
+      "type": "textarea",
+      "default": "[{\"page\":1,\"x\":20,\"y\":20,\"width\":200,\"height\":50}]"
+    },
+    {
+      "key": "dpi",
+      "label": "Resolución (72 a 300 ppp)",
+      "type": "number",
+      "default": 144
+    }
+  ],
+  "requirements": []
+}
