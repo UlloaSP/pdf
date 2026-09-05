@@ -1,0 +1,12 @@
+{
+  "id": "pdf_to_markdown",
+  "name": "PDF a Markdown",
+  "description": "Extrae el texto en orden de lectura con separadores de página. No reconstruye tablas, títulos, imágenes ni enlaces; requiere OCR previo en escaneos.",
+  "category": "Conversión",
+  "extensions": [
+    "pdf"
+  ],
+  "multiple": false,
+  "fields": [],
+  "requirements": []
+}
