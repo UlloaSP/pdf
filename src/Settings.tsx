@@ -480,7 +480,7 @@ export function Settings({
                   [
                     ["search", "Buscar utilidades", "Ir al buscador del catálogo."],
                     ["settings", "Abrir ajustes", "Volver a esta pantalla."],
-                    ["catalog", "Abrir catálogo", "Ver todas las utilidades."],
+                    ["catalog", "Abrir catálogo", "Ver todas las utilidades de esta sección."],
                   ] as const
                 ).map(([name, title, detail]) => (
                   <Row key={name} title={title} detail={detail}>
