@@ -1,5 +1,11 @@
 # Entrega de utilidades PDF e imágenes
 
+## Migración del frontend
+
+La [PR #57](https://github.com/UlloaSP/pdf/pull/57) migra los tres scripts JavaScript restantes a TypeScript estricto e inicializa Tailwind CSS v4 y shadcn/ui. El catálogo, los ajustes, los formularios y los controles de ventana usan componentes compartidos. El CSS manual de ajustes se elimina; los temas y las reglas globales se mantienen en `src/styles.css`. Las convenciones están en [frontend](frontend.md).
+
+Pasan lint, tipos de app y scripts, build, 21 tests de frontend y 8 de manifiesto. En navegador se comprobaron los 45 formularios, búsqueda por biblioteca, modo oscuro, texto de 18 px a 580 × 500, restablecimiento, atajos y navegación vertical por teclado. Se corrigieron la orientación del ToggleGroup y las etiquetas del Slider detectadas al revisar los componentes generados. CI y la revisión del último commit se registran en la PR.
+
 Las 45 utilidades están integradas en develop, con revisión independiente y CI aprobado antes de cada merge. main conserva la base inicial y la sincronización de CodeRabbit; esta entrega no publica una release de producto.
 
 Seguimiento: la [PR #36](https://github.com/UlloaSP/pdf/pull/36) configura CodeRabbit para todos los destinos, incorpora la skill frontend-design de Claude y documenta el arranque local. La [PR #37](https://github.com/UlloaSP/pdf/pull/37) sincroniza exclusivamente el YAML con main. El esquema oficial valida la configuración; CodeRabbit la reconoce, pero sus límites de estrellas y cuota OSS impiden confirmar revisiones automáticas efectivas. El procedimiento de revisión sustituta está en `docs/gitflow.md`; los resultados de CI y los merges se consultan en cada PR.
