@@ -49,7 +49,7 @@ async function render(locked = false) {
     root.render(
       <Workspace
         feature={feature}
-        settings={{ ...defaultSettings, defaultOutputDir: "C:/out" }}
+        settings={{ ...defaultSettings, defaultOutputDir: "C:/out", confirmCancel: true }}
         locked={locked}
         onClose={vi.fn()}
         onBusyChange={onBusyChange}
