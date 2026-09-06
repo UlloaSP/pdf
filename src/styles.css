@@ -49,6 +49,7 @@
   --line-base: #dedfd6;
   --border: color-mix(in srgb, var(--line-base), var(--foreground) var(--contrast-mix, 0%));
   --accent: color-mix(in srgb, var(--primary) 12%, var(--background));
+  --secondary: var(--accent);
   --muted: color-mix(in srgb, var(--foreground) 6%, var(--background));
   --destructive: #a3221c;
   color-scheme: light;
