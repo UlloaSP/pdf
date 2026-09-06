@@ -1,12 +1,14 @@
 # PDF Utils
 
-Aplicación de utilidades PDF para Windows. React + TypeScript + Vite+ en el frontend, Tauri 2 + Rust como backend local y un worker Python empaquetado para los motores. Sin servidor obligatorio.
+Aplicación de utilidades PDF e imágenes para Windows. React + TypeScript + Vite+ en el frontend, Tauri 2 + Rust como backend local y un worker Python empaquetado para los motores. Sin servidor obligatorio.
 
 El [plan de arquitectura](docs/architecture.md) contiene las decisiones, las 32 utilidades previstas y las fases de implementación.
 
 ## Estado
 
-32 utilidades con búsqueda, filtros y formularios en español. Las operaciones que necesitan motores externos lo indican en su formulario. La vista de navegador permite consultar opciones; el procesamiento requiere la aplicación de escritorio. Consulta el [registro de entrega](docs/delivery.md) para ver las PR integradas, el alcance real y los límites de cada utilidad.
+45 utilidades con búsqueda y formularios en español, separadas en PDF e Imágenes en la sidebar. PDF conserva las 32 utilidades anteriores, incluidas las conversiones entre PDF e imágenes. Imágenes añade 13 herramientas de edición y conversión. Las operaciones que necesitan motores externos lo indican en su formulario. La vista de navegador permite consultar opciones; el procesamiento requiere la aplicación de escritorio. Consulta el [registro de entrega](docs/delivery.md) para ver las PR integradas, el alcance real y los límites de cada utilidad.
+
+Eliminar fondo requiere rembg y un modelo U2NET local compatible. HTML a imagen utiliza Chrome o Edge instalado. Ampliar imagen usa interpolación Lanczos; pixelar requiere indicar las regiones. Los formatos admitidos y los límites están documentados por utilidad.
 
 El [Gitflow](docs/gitflow.md) define ramas, PR y merges para cada petición. El [plan de implementación](docs/implementation-plan.md) recoge el reparto paralelo y los límites de esta entrega.
 
@@ -73,4 +75,4 @@ La gestión de dependencias usa siempre pnpm a través de `vp install`, `vp add`
 
 El pie de la sidebar contiene Ajustes y el estado de actualizaciones. Por defecto se comprueba al arrancar, tras 20 segundos, y cada seis horas. Puedes elegir una hora o un día, o desactivar las comprobaciones automáticas. La descarga y la instalación siempre requieren una acción; instalar se bloquea mientras se procesa un documento.
 
-Los ajustes se guardan localmente: tema del sistema, claro u oscuro; color de acento; contraste de bordes; opacidad de la sidebar; animaciones; fuente y tamaño; carpeta de salida; confirmaciones y atajos. Ctrl+, abre ajustes, Ctrl+K busca herramientas y Ctrl+Shift+H vuelve al catálogo completo. Abrir ajustes conserva el formulario actual. El navegador permite probar la interfaz; el actualizador funciona en la app de Windows.
+Los ajustes se guardan localmente: tema del sistema, claro u oscuro; color de acento; contraste de bordes; opacidad de la sidebar; animaciones; fuente y tamaño; carpeta de salida; confirmaciones y atajos. Ctrl+, abre ajustes, Ctrl+K busca herramientas y Ctrl+Shift+H vuelve al catálogo de la sección actual y limpia la búsqueda. Abrir ajustes conserva el formulario actual. El navegador permite probar la interfaz; el actualizador funciona en la app de Windows.
