@@ -1,0 +1,17 @@
+{
+  "id": "image_html",
+  "name": "HTML a imagen",
+  "description": "Captura un HTML local o una URL en PNG o JPG con Edge o Chrome. Elige el tamaño del área visible.",
+  "workspace": "images",
+  "category": "Conversión",
+  "extensions": ["html", "htm"],
+  "multiple": false,
+  "requirements": ["Microsoft Edge o Google Chrome instalado"],
+  "fields": [
+    {"key": "url", "label": "URL HTTP/HTTPS (deja los archivos vacíos para usarla)", "type": "text", "default": ""},
+    {"key": "width", "label": "Ancho de captura (píxeles)", "type": "number", "default": 1280},
+    {"key": "height", "label": "Alto de captura (píxeles)", "type": "number", "default": 900},
+    {"key": "wait_ms", "label": "Tiempo virtual para scripts (ms)", "type": "number", "default": 1000},
+    {"key": "format", "label": "Formato de salida", "type": "select", "options": ["PNG", "JPG"], "default": "PNG"}
+  ]
+}
