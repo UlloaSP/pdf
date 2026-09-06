@@ -1,0 +1,33 @@
+{
+  "id": "image_remove_background",
+  "workspace": "images",
+  "name": "Eliminar fondo",
+  "description": "Obtén un PNG transparente con rembg y un modelo U2NET local ya instalado. Requiere motor externo.",
+  "category": "Avanzadas",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "bmp",
+    "tif",
+    "tiff",
+    "gif"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "executable",
+      "label": "Ruta a rembg.exe (vacío: buscar en PATH)",
+      "type": "text"
+    },
+    {
+      "key": "model_path",
+      "label": "Ruta al modelo U2NET .onnx local",
+      "type": "text"
+    }
+  ],
+  "requirements": [
+    "rembg CLI externo y modelo U2NET ONNX local compatible"
+  ]
+}
