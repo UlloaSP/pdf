@@ -14,7 +14,7 @@ class HtmlImageTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.source = self.root / "con espacios.html"
         self.source.write_text("<h1>Hola</h1>", encoding="utf-8")
         self.output = self.root / "out"
