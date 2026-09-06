@@ -54,3 +54,11 @@ class ImageFeatureTests(unittest.TestCase):
     def test_rejects_invalid_options(self):
         for options in [{'brightness':float('nan')},{'contrast':4},{'effect':'magic'},{'text':'x','text_x':500},{'sticker_path':'missing.png'},{'text':'漢'}]:
             with self.subTest(options=options),self.assertRaises(ValueError): run([self.path],str(self.out),options)
+
+    def test_accented_glyphs_have_distinct_rendering(self):
+        from engine.features.image_edit import text_layer
+        plain=text_layer('o',32,'white')
+        accented=text_layer('ó',32,'white')
+        self.assertGreater(accented.height,plain.height)
+        # Different accented vowels must not be the same missing-glyph box.
+        self.assertNotEqual(text_layer('ó',32,'white').tobytes(),text_layer('í',32,'white').tobytes())

@@ -53,8 +53,16 @@ def text_value(value):
     return value
 
 
+def image_font(size):
+    import reportlab
+    candidates=[Path('C:/Windows/Fonts/arial.ttf'),Path(reportlab.__file__).parent/'fonts/Vera.ttf']
+    for path in candidates:
+        if path.is_file(): return ImageFont.truetype(str(path),size=size)
+    raise ValueError("No se encuentra una fuente Latin-1 compatible.")
+
+
 def text_layer(text,size,fill,stroke=0):
-    font=ImageFont.load_default(size=size)
+    font=image_font(size)
     draw=ImageDraw.Draw(Image.new('RGBA',(1,1)))
     box=draw.multiline_textbbox((0,0),text,font=font,stroke_width=stroke,align='center')
     width,height=max(1,math.ceil(box[2]-box[0])),max(1,math.ceil(box[3]-box[1]))
