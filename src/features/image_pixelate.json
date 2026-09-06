@@ -1,0 +1,43 @@
+{
+  "id": "image_pixelate",
+  "workspace": "images",
+  "name": "Pixelar o difuminar",
+  "description": "Oculta regiones elegidas por coordenadas. No detecta caras u objetos automáticamente.",
+  "category": "Edición",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "bmp",
+    "tif",
+    "tiff",
+    "gif"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "regions",
+      "label": "Regiones JSON: x, y, width, height en píxeles",
+      "type": "textarea",
+      "default": "[{\"x\":10,\"y\":10,\"width\":100,\"height\":100}]"
+    },
+    {
+      "key": "mode",
+      "label": "Método",
+      "type": "select",
+      "default": "Pixelar",
+      "options": [
+        "Pixelar",
+        "Difuminar"
+      ]
+    },
+    {
+      "key": "strength",
+      "label": "Bloque de píxeles o radio de desenfoque (2–100)",
+      "type": "number",
+      "default": 16
+    }
+  ],
+  "requirements": []
+}
