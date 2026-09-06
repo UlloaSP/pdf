@@ -30,3 +30,5 @@ Esta firma protege el archivo que descarga el updater. No equivale a la firma Au
 Ejecuta `vp run test:updater-manifest` para probar el generador. En CI, `vp run update:manifest` toma `RELEASE_TAG` y `GITHUB_REPOSITORY` del entorno y escribe el manifiesto junto al MSI firmado.
 
 Los tests de `scripts/generate-update-manifest.test.mjs` usan artefactos temporales para verificar el manifiesto y el rechazo de versiones, firmas e instaladores inválidos. Sus firmas son fixtures estructurales y no se publican. El workflow los ejecuta antes del MSI. Queda pendiente comprobar el recorrido de actualización entre dos releases reales firmadas; generar el manifiesto no prueba la instalación ni el reinicio en Windows.
+
+Una ejecución repetida solo puede completar una release en borrador. El workflow rechaza reemplazar assets de una release pública para evitar descoordinar el instalador y su firma.
