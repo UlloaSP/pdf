@@ -9,7 +9,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import "./settings.css";
 import { RevealPanel } from "./RevealPanel";
 import { WindowControls } from "./WindowControls";
-import { categories, tools, type Category } from "./tools";
+import { tools } from "./tools";
 import { features, type Feature } from "./features";
 import { Workspace } from "./Workspace";
 
@@ -53,13 +53,14 @@ const plannedCatalog = tools.map((tool, index) => {
     ...tool,
     description: feature?.description ?? tool.description,
     feature,
+    workspace: feature?.workspace ?? "pdf",
   };
 });
 const catalog = [
   ...plannedCatalog,
   ...features
     .filter((feature) => !ids.includes(feature.id))
-    .map((feature) => ({ ...feature, feature })),
+    .map((feature) => ({ ...feature, feature, workspace: feature.workspace ?? "pdf" })),
 ];
 
 export function App() {
@@ -96,7 +97,6 @@ export function App() {
         setShowSettings(false);
         setSelected(null);
         if (binding === settings.shortcuts.catalog) {
-          setCategory("Todas");
           setQuery("");
         }
         if (binding === settings.shortcuts.search)
@@ -117,7 +117,7 @@ export function App() {
       .onCloseRequested((event) => {
         if (!allowClose && closeState.current.busy && closeState.current.confirm) {
           event.preventDefault();
-          if (window.confirm("Hay un PDF en proceso. ¿Cancelar y cerrar la aplicación?")) {
+          if (window.confirm("Hay un archivo en proceso. ¿Cancelar y cerrar la aplicación?")) {
             allowClose = true;
             void getCurrentWindow()
               .close()
@@ -136,12 +136,13 @@ export function App() {
       unlisten?.();
     };
   }, []);
-  const [category, setCategory] = useState<Category>("Todas");
+  const [workspace, setWorkspace] = useState<"pdf" | "images">("pdf");
+  const workspaceLabel = workspace === "pdf" ? "PDF" : "Imágenes";
   const [query, setQuery] = useState("");
   const main = useRef<HTMLElement>(null);
   useEffect(() => {
     main.current?.scrollTo(0, 0);
-  }, [selected, category, showSettings]);
+  }, [selected, workspace, showSettings]);
   const normalize = (text: string) =>
     text
       .normalize("NFD")
@@ -149,7 +150,7 @@ export function App() {
       .toLocaleLowerCase("es");
   const visible = catalog.filter(
     (tool) =>
-      (category === "Todas" || tool.category === category) &&
+      tool.workspace === workspace &&
       normalize(`${tool.name} ${tool.description}`).includes(normalize(query.trim())),
   );
 
@@ -169,19 +170,36 @@ export function App() {
             </span>{" "}
             PDF Utils
           </div>
-          <nav aria-label="Categorías de herramientas">
-            {categories.map((item) => (
+          <nav aria-label="Bibliotecas de herramientas">
+            {(
+              [
+                { id: "pdf", label: "PDF" },
+                { id: "images", label: "Imágenes" },
+              ] as const
+            ).map((item) => (
               <button
-                key={item}
+                key={item.id}
                 disabled={busy || updater.installing}
-                aria-pressed={category === item}
+                aria-pressed={workspace === item.id}
                 onClick={() => {
                   setShowSettings(false);
-                  setCategory(item);
+                  setWorkspace(item.id);
+                  setQuery("");
                   setSelected(null);
                 }}
               >
-                {item}
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  {item.id === "pdf" ? (
+                    <path d="M6 3h8l4 4v14H6Z M14 3v5h4 M9 12h6 M9 16h6" />
+                  ) : (
+                    <>
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <circle cx="9" cy="9" r="2" />
+                      <path d="m4 19 6-6 4 3 3-5 4 7" />
+                    </>
+                  )}
+                </svg>
+                {item.label}
               </button>
             ))}
           </nav>
@@ -245,7 +263,7 @@ export function App() {
           ) : (
             <>
               <div className="catalog-heading">
-                <h1 className="sr-only">Herramientas PDF</h1>
+                <h1 className="sr-only">Herramientas de {workspaceLabel}</h1>
                 <label className="search">
                   <span className="sr-only">Buscar herramienta</span>
                   <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -255,21 +273,11 @@ export function App() {
                   <input
                     ref={search}
                     type="search"
-                    placeholder="Buscar herramienta…"
+                    placeholder={`Buscar en ${workspaceLabel}…`}
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                   />
                 </label>
-                {category !== "Todas" && (
-                  <button
-                    className="category-filter"
-                    onClick={() => setCategory("Todas")}
-                    aria-label={`Quitar filtro ${category}`}
-                  >
-                    {category}
-                    <span aria-hidden="true">×</span>
-                  </button>
-                )}
               </div>
               <p className="sr-only" role="status">
                 {visible.length} herramientas
@@ -278,7 +286,7 @@ export function App() {
                 {visible.map((tool) => (
                   <article className="tool-card" key={tool.name}>
                     <span className="file-icon" aria-hidden="true">
-                      PDF
+                      {workspace === "pdf" ? "PDF" : "IMG"}
                     </span>
                     <h2>{tool.name}</h2>
                     <p>{tool.description}</p>
@@ -293,7 +301,7 @@ export function App() {
               </section>
               {visible.length === 0 && (
                 <p className="empty">
-                  No hay herramientas con ese nombre. Prueba otra búsqueda o categoría.
+                  No hay herramientas con ese nombre. Prueba otra búsqueda o sección.
                 </p>
               )}
             </>
