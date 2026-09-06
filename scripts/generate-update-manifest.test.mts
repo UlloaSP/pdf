@@ -1,11 +1,11 @@
-import { test } from "node:test";
+import { test, type TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtemp, mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { generateUpdateManifest } from "./generate-update-manifest.mjs";
+import { generateUpdateManifest } from "./generate-update-manifest.mts";
 
-async function fixture(t) {
+async function fixture(t: TestContext) {
   const rootDir = await mkdtemp(join(tmpdir(), "pdf-updater-"));
   t.after(() => rm(rootDir, { recursive: true, force: true }));
   await mkdir(join(rootDir, "src-tauri"));
@@ -37,7 +37,7 @@ async function fixture(t) {
   };
 }
 
-test("stages safe asset names without changing signed bytes and uses their exact URL", async (t) => {
+void test("stages safe asset names without changing signed bytes and uses their exact URL", async (t) => {
   const f = await fixture(t);
   const msiBytes = await readFile(join(f.bundleDir, f.installer));
   const signatureBytes = await readFile(join(f.bundleDir, `${f.installer}.sig`));
@@ -52,6 +52,7 @@ test("stages safe asset names without changing signed bytes and uses their exact
   });
   assert.deepEqual(JSON.parse(await readFile(join(f.bundleDir, "latest.json"), "utf8")), result);
   const assetName = new URL(result.platforms["windows-x86_64"].url).pathname.split("/").at(-1);
+  assert.ok(assetName);
   assert.deepEqual(
     (await readdir(f.bundleDir)).sort((a, b) => a.localeCompare(b)),
     [assetName, `${assetName}.sig`, "latest.json"].sort((a, b) => a.localeCompare(b)),
@@ -61,7 +62,7 @@ test("stages safe asset names without changing signed bytes and uses their exact
   assert.deepEqual(await generateUpdateManifest(f), result);
 });
 
-test("rejects a normalized signature collision before renaming either artifact", async (t) => {
+void test("rejects a normalized signature collision before renaming either artifact", async (t) => {
   const f = await fixture(t);
   const originalMsi = await readFile(join(f.bundleDir, f.installer));
   const originalSignature = await readFile(join(f.bundleDir, `${f.installer}.sig`));
@@ -77,7 +78,7 @@ test("rejects a normalized signature collision before renaming either artifact",
   await assert.rejects(readFile(join(f.bundleDir, "latest.json")), { code: "ENOENT" });
 });
 
-test("rejects an existing normalized MSI without replacing either file", async (t) => {
+void test("rejects an existing normalized MSI without replacing either file", async (t) => {
   const f = await fixture(t);
   const collision = "PDF-Utils_1.2.3_x64_es-ES.msi";
   await writeFile(join(f.bundleDir, collision), "existing MSI");
@@ -87,19 +88,19 @@ test("rejects an existing normalized MSI without replacing either file", async (
   assert.equal(await readFile(join(f.bundleDir, `${f.installer}.sig`), "utf8"), `${f.signature}\n`);
 });
 
-test("rejects a tag for a different version before writing a manifest", async (t) => {
+void test("rejects a tag for a different version before writing a manifest", async (t) => {
   const f = await fixture(t);
   await assert.rejects(generateUpdateManifest({ ...f, tag: "v1.2.4" }), /etiqueta/);
   await assert.rejects(readFile(join(f.bundleDir, "latest.json")), { code: "ENOENT" });
 });
 
-test("rejects unsigned installers", async (t) => {
+void test("rejects unsigned installers", async (t) => {
   const f = await fixture(t);
   await rm(join(f.bundleDir, `${f.installer}.sig`));
   await assert.rejects(generateUpdateManifest(f), /firma/);
 });
 
-test("rejects missing, ambiguous and empty installers", async (t) => {
+void test("rejects missing, ambiguous and empty installers", async (t) => {
   const f = await fixture(t);
   await writeFile(join(f.bundleDir, "stale.msi"), "old");
   await assert.rejects(generateUpdateManifest(f), /exactamente un MSI/);
@@ -110,7 +111,7 @@ test("rejects missing, ambiguous and empty installers", async (t) => {
   await assert.rejects(generateUpdateManifest(f), /exactamente un MSI/);
 });
 
-test("rejects arbitrary signature text and truncated Minisign envelopes", async (t) => {
+void test("rejects arbitrary signature text and truncated Minisign envelopes", async (t) => {
   const f = await fixture(t);
   await writeFile(join(f.bundleDir, `${f.installer}.sig`), "not a signature");
   await assert.rejects(generateUpdateManifest(f), /base64/);
@@ -121,7 +122,7 @@ test("rejects arbitrary signature text and truncated Minisign envelopes", async 
   await assert.rejects(generateUpdateManifest(f), /completa/);
 });
 
-test("rejects incoherent native version and invalid repository", async (t) => {
+void test("rejects incoherent native version and invalid repository", async (t) => {
   const f = await fixture(t);
   await assert.rejects(
     generateUpdateManifest({ ...f, repository: "owner/repo/extra" }),

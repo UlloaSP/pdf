@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 export function RevealPanel({
@@ -26,7 +27,12 @@ export function RevealPanel({
   return (
     <div
       ref={root}
-      className={`reveal-zone reveal-${side}`}
+      className={cn(
+        "group/reveal fixed",
+        side === "top"
+          ? "inset-x-0 top-0 z-30 h-(--frame) data-[open=true]:h-10"
+          : "top-(--frame) bottom-0 left-0 z-20 w-(--frame) data-[open=true]:w-[calc(250px+var(--frame))]",
+      )}
       data-open={open}
       onPointerEnter={(event) => {
         if (event.pointerType === "mouse") setHovered(true);
@@ -48,15 +54,32 @@ export function RevealPanel({
       }}
     >
       <button
-        className="edge-trigger"
+        className={cn(
+          "absolute inset-0 border-0 bg-transparent p-0 text-frame-foreground focus-visible:z-10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
+          side === "top" ? "h-(--frame) w-full" : "h-full w-(--frame)",
+        )}
         aria-label={label}
         aria-expanded={open}
         aria-controls={`panel-${side}`}
         onClick={() => setTapped(!tapped)}
       >
-        <span aria-hidden="true">{side === "left" ? "☰" : "⋯"}</span>
+        <span
+          className="opacity-0 [@media(hover:none)]:text-[10px] [@media(hover:none)]:opacity-80"
+          aria-hidden="true"
+        >
+          {side === "left" ? "☰" : "⋯"}
+        </span>
       </button>
-      <div id={`panel-${side}`} className="reveal-panel" inert={!open}>
+      <div
+        id={`panel-${side}`}
+        className={cn(
+          "pointer-events-none absolute opacity-0 transition-[transform,opacity] duration-(--animation) ease-out group-data-[open=true]/reveal:pointer-events-auto group-data-[open=true]/reveal:translate-0 group-data-[open=true]/reveal:opacity-100",
+          side === "top"
+            ? "inset-x-(--frame) top-0 -translate-y-full"
+            : "inset-y-(--frame) left-(--frame) w-[250px] -translate-x-[calc(100%+var(--frame))]",
+        )}
+        inert={!open}
+      >
         {children}
       </div>
     </div>

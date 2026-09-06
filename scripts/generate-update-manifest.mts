@@ -3,27 +3,52 @@ import { readFile, readdir, rename, stat, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-const readJson = async (path) => JSON.parse(await readFile(path, "utf8"));
+interface ManifestOptions {
+  rootDir: string;
+  tag: string;
+  repository: string;
+  bundleDir?: string;
+  publishedAt?: Date;
+}
+
+interface UpdateManifest {
+  version: string;
+  notes: string;
+  pub_date: string;
+  platforms: { "windows-x86_64": { signature: string; url: string } };
+}
+
+async function readVersion(path: string): Promise<string> {
+  const data: unknown = JSON.parse(await readFile(path, "utf8"));
+  assert.ok(
+    data !== null && typeof data === "object" && "version" in data,
+    "Falta la versión de la aplicación.",
+  );
+  assert.ok(typeof data.version === "string", "La versión debe ser texto.");
+  return data.version;
+}
 
 // This validates the envelope, not its cryptography. Tauri signs the MSI during
 // the build; the updater verifies those exact bytes against its embedded pubkey.
-function validateSignature(signature) {
+function validateSignature(signature: string): void {
   assert.match(signature, /^[A-Za-z0-9+/]+={0,2}$/, "La firma debe ser base64 de Tauri.");
   assert.ok(signature.length < 16_384, "Firma excesivamente grande.");
   const decoded = Buffer.from(signature, "base64");
   assert.equal(decoded.toString("base64"), signature, "Firma base64 inválida.");
   const lines = decoded.toString("utf8").trim().split(/\r?\n/);
   assert.equal(lines.length, 4, "Se esperaba una firma Minisign completa.");
-  assert.ok(lines[0].startsWith("untrusted comment: "), "Cabecera de firma inválida.");
-  assert.ok(lines[2].startsWith("trusted comment: "), "Comentario de firma inválido.");
+  assert.ok(lines[0]?.startsWith("untrusted comment: "), "Cabecera de firma inválida.");
+  assert.ok(lines[2]?.startsWith("trusted comment: "), "Comentario de firma inválido.");
   for (const [index, size] of [
     [1, 74],
     [3, 64],
-  ]) {
-    assert.match(lines[index], /^[A-Za-z0-9+/]+={0,2}$/, "Firma Minisign inválida.");
-    const bytes = Buffer.from(lines[index], "base64");
+  ] as const) {
+    const line = lines[index];
+    assert.ok(line !== undefined);
+    assert.match(line, /^[A-Za-z0-9+/]+={0,2}$/, "Firma Minisign inválida.");
+    const bytes = Buffer.from(line, "base64");
     assert.equal(bytes.length, size, "Longitud de firma Minisign inválida.");
-    assert.equal(bytes.toString("base64"), lines[index], "Firma Minisign base64 inválida.");
+    assert.equal(bytes.toString("base64"), line, "Firma Minisign base64 inválida.");
   }
 }
 
@@ -33,19 +58,20 @@ export async function generateUpdateManifest({
   repository,
   bundleDir = join(rootDir, "src-tauri/target/release/bundle/msi"),
   publishedAt = new Date(),
-}) {
-  const { version } = await readJson(join(rootDir, "package.json"));
+}: ManifestOptions): Promise<UpdateManifest> {
+  const version = await readVersion(join(rootDir, "package.json"));
   assert.match(
     version,
     /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/,
     "Usa una versión estable MSI X.Y.Z.",
   );
   const [major, minor, patch] = version.split(".").map(Number);
+  assert.ok(major !== undefined && minor !== undefined && patch !== undefined);
   assert.ok(major <= 255 && minor <= 255 && patch <= 65535, "Versión fuera de los límites MSI.");
   assert.equal(tag, `v${version}`, "La etiqueta debe coincidir con la versión de la aplicación.");
   assert.match(repository, /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/, "Repositorio GitHub inválido.");
   assert.equal(
-    (await readJson(join(rootDir, "src-tauri/tauri.conf.json"))).version,
+    await readVersion(join(rootDir, "src-tauri/tauri.conf.json")),
     version,
     "La versión de Tauri debe coincidir.",
   );
@@ -63,6 +89,7 @@ export async function generateUpdateManifest({
     "Se requiere exactamente un MSI para evitar publicar un instalador ambiguo.",
   );
   const [installer] = installers;
+  assert.ok(installer !== undefined);
   const assetName = installer.replace(/[^A-Za-z0-9._-]+/g, "-");
   assert.match(
     assetName,
@@ -90,7 +117,7 @@ export async function generateUpdateManifest({
   );
   const signature = (await readFile(join(bundleDir, `${installer}.sig`), "utf8")).trim();
   validateSignature(signature);
-  const manifest = {
+  const manifest: UpdateManifest = {
     version,
     notes: `PDF Utils ${version}. Consulta las notas de esta versión en GitHub.`,
     pub_date: publishedAt.toISOString(),
@@ -118,10 +145,14 @@ export async function generateUpdateManifest({
 }
 
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
+  const tag = process.env.RELEASE_TAG;
+  const repository = process.env.GITHUB_REPOSITORY;
+  assert.ok(tag, "Falta RELEASE_TAG.");
+  assert.ok(repository, "Falta GITHUB_REPOSITORY.");
   await generateUpdateManifest({
     rootDir: fileURLToPath(new URL("../", import.meta.url)),
-    tag: process.env.RELEASE_TAG,
-    repository: process.env.GITHUB_REPOSITORY,
+    tag,
+    repository,
   });
   console.log("latest.json generado para windows-x86_64 con firma del MSI.");
 }

@@ -2,6 +2,8 @@
 
 Aplicación de utilidades PDF e imágenes para Windows. React + TypeScript + Vite+ en el frontend, Tauri 2 + Rust como backend local y un worker Python empaquetado para los motores. Sin servidor obligatorio.
 
+La interfaz usa Tailwind CSS v4 y componentes shadcn/ui sobre Radix, personalizados con los temas de la app. Los scripts de mantenimiento también usan TypeScript, ejecutado directamente por Node 24. Consulta las [convenciones del frontend](docs/frontend.md).
+
 El [plan de arquitectura](docs/architecture.md) contiene las decisiones, las 32 utilidades previstas y las fases de implementación.
 
 ## Estado
@@ -70,6 +72,8 @@ El workflow usa `GITHUB_TOKEN` con escritura solo en el trabajo de publicación.
 `pnpm-lock.yaml`, `Cargo.lock` y `engine/requirements.txt` fijan las dependencias resueltas. CI ejecuta pruebas Python, empaqueta el worker y valida Rust antes de generar el MSI. Los motores adicionales se documentan por utilidad en `docs/features`.
 
 La gestión de dependencias usa siempre pnpm a través de `vp install`, `vp add` y `vp remove`. No uses npm/npx ni mantengas otros lockfiles. Los scripts se ejecutan con `vp run <script>`; `pnpm run <script>` también usa las mismas herramientas locales. `vp run build` incluye la comprobación TypeScript antes del bundle. `vp run check` ejecuta lint y tipos con Vite+; el formato de los archivos existentes se conserva.
+
+Los scripts `.mts` usan el type stripping nativo de Node 24, sin transpilar en tiempo de ejecución. `vp run typecheck:scripts` aplica `scripts/tsconfig.json` con tipos estrictos y sintaxis borrable; `vp run build` incluye este check. Node no comprueba tipos al ejecutarlos. Consulta la [documentación oficial de Node](https://nodejs.org/docs/latest-v24.x/api/typescript.html).
 
 ## Ajustes de la app
 
