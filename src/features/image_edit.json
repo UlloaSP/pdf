@@ -1,0 +1,117 @@
+{
+  "id": "image_edit",
+  "workspace": "images",
+  "name": "Editor de imágenes",
+  "description": "Ajusta color, añade texto, bordes o una pegatina. Salida PNG; sin edición por IA.",
+  "category": "Edición",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "bmp",
+    "tif",
+    "tiff",
+    "gif"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "effect",
+      "label": "Efecto",
+      "type": "select",
+      "default": "Ninguno",
+      "options": [
+        "Ninguno",
+        "Gris",
+        "Sepia",
+        "Invertir"
+      ]
+    },
+    {
+      "key": "brightness",
+      "label": "Brillo (0–3)",
+      "type": "number",
+      "default": 1
+    },
+    {
+      "key": "contrast",
+      "label": "Contraste (0–3)",
+      "type": "number",
+      "default": 1
+    },
+    {
+      "key": "saturation",
+      "label": "Saturación (0–3)",
+      "type": "number",
+      "default": 1
+    },
+    {
+      "key": "text",
+      "label": "Texto opcional",
+      "type": "textarea",
+      "default": ""
+    },
+    {
+      "key": "font_size",
+      "label": "Tamaño del texto (px)",
+      "type": "number",
+      "default": 32
+    },
+    {
+      "key": "text_color",
+      "label": "Color del texto",
+      "type": "text",
+      "default": "#ffffff"
+    },
+    {
+      "key": "text_x",
+      "label": "Texto desde izquierda (px)",
+      "type": "number",
+      "default": 10
+    },
+    {
+      "key": "text_y",
+      "label": "Texto desde arriba (px)",
+      "type": "number",
+      "default": 10
+    },
+    {
+      "key": "border",
+      "label": "Borde (px)",
+      "type": "number",
+      "default": 0
+    },
+    {
+      "key": "border_color",
+      "label": "Color del borde",
+      "type": "text",
+      "default": "#ffffff"
+    },
+    {
+      "key": "sticker_path",
+      "label": "Ruta de pegatina opcional",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "sticker_width",
+      "label": "Ancho de pegatina (px)",
+      "type": "number",
+      "default": 100
+    },
+    {
+      "key": "sticker_x",
+      "label": "Pegatina desde izquierda (px)",
+      "type": "number",
+      "default": 10
+    },
+    {
+      "key": "sticker_y",
+      "label": "Pegatina desde arriba (px)",
+      "type": "number",
+      "default": 10
+    }
+  ],
+  "requirements": []
+}
