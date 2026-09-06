@@ -42,6 +42,8 @@ Las tareas de interfaz siguen la [skill frontend-design de Claude](.claude/skill
 
 ```powershell
 vp run check
+vp run test
+vp run test:updater-manifest
 vp run check:version
 vp run build
 .venv/Scripts/python -m unittest discover -s engine/tests
@@ -61,8 +63,14 @@ CI valida frontend y Rust, compila el MSI y lo conserva como artefacto. Release 
 2. Ejecuta `vp run check:version` y confirma los cambios en Git.
 3. Crea y sube la etiqueta correspondiente, por ejemplo `git tag v0.1.0` y `git push origin v0.1.0`.
 
-El workflow usa `GITHUB_TOKEN` con escritura solo en el trabajo de publicación. Los instaladores iniciales no están firmados. No se han publicado releases ni añadido actualizaciones automáticas.
+El workflow usa `GITHUB_TOKEN` con escritura solo en el trabajo de publicación. Las releases generan MSI, firma del actualizador y `latest.json`. La clave de firma está configurada en el secreto `TAURI_SIGNING_PRIVATE_KEY`. Esta firma no es un certificado Authenticode. La primera release sigue pendiente. Consulta [actualizaciones de Windows](docs/updating.md).
 
 `pnpm-lock.yaml`, `Cargo.lock` y `engine/requirements.txt` fijan las dependencias resueltas. CI ejecuta pruebas Python, empaqueta el worker y valida Rust antes de generar el MSI. Los motores adicionales se documentan por utilidad en `docs/features`.
 
 La gestión de dependencias usa siempre pnpm a través de `vp install`, `vp add` y `vp remove`. No uses npm/npx ni mantengas otros lockfiles. Los scripts se ejecutan con `vp run <script>`; `pnpm run <script>` también usa las mismas herramientas locales. `vp run build` incluye la comprobación TypeScript antes del bundle. `vp run check` ejecuta lint y tipos con Vite+; el formato de los archivos existentes se conserva.
+
+## Ajustes de la app
+
+El pie de la sidebar contiene Ajustes y el estado de actualizaciones. Por defecto se comprueba al arrancar, tras 20 segundos, y cada seis horas. Puedes elegir una hora o un día, o desactivar las comprobaciones automáticas. La descarga y la instalación siempre requieren una acción; instalar se bloquea mientras se procesa un documento.
+
+Los ajustes se guardan localmente: tema del sistema, claro u oscuro; color de acento; contraste de bordes; opacidad de la sidebar; animaciones; fuente y tamaño; carpeta de salida; confirmaciones y atajos. Ctrl+, abre ajustes, Ctrl+K busca herramientas y Ctrl+Shift+H vuelve al catálogo completo. Abrir ajustes conserva el formulario actual. El navegador permite probar la interfaz; el actualizador funciona en la app de Windows.

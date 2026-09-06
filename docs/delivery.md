@@ -84,3 +84,11 @@ TypeScript y Vite compilan. Se comprobaron los 32 formularios en navegador a 580
 Rust pasa formato, Clippy y compilación de su harness de pruebas; la lógica de negocio se prueba en Python. Se genera un MSI Windows x64 mediante WiX. No se ha validado una instalación y desinstalación en una VM limpia ni se ha firmado el instalador.
 
 El historial de [Actions](https://github.com/UlloaSP/pdf/actions/workflows/ci.yml) conserva los checks de las PR y el build completo sobre develop. Los artefactos MSI están asociados a las ejecuciones completas. La [PR #34](https://github.com/UlloaSP/pdf/pull/34) registra las correcciones de interfaz y rutas Windows.
+
+## Ajustes y actualizaciones
+
+La [PR #41](https://github.com/UlloaSP/pdf/pull/41) incorpora preferencias locales y actualizaciones firmadas de Windows. Se comprobaron 18 casos de preferencias/controlador y 8 del manifiesto, lint/tipos, build, formato/Clippy y compilación de Rust. El MSI firmado y su manifiesto se generaron localmente; se verificó que normalizar el nombre para GitHub no cambia los bytes del instalador ni de su firma.
+
+Se probó la interfaz en navegador a 580 x 500, texto de 18 px, persistencia tras recargar, recuperación de preferencias corruptas, atajos personalizados y conservación del formulario al abrir ajustes. La app nativa consultó el endpoint real y mostró el manifiesto no disponible, sin presentarlo como una versión actualizada. No existe aún la primera release; queda pendiente probar descarga, instalación y reinicio entre dos releases publicadas. La firma del actualizador no es Authenticode. Detalles en [actualizaciones](updating.md).
+
+La revisión independiente detectó y corrigió el nombre de asset con espacios, la sobrescritura de releases públicas y dos detalles de interfaz. El resultado de CI y la disponibilidad real de CodeRabbit quedan registrados en la PR.

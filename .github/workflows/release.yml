@@ -14,6 +14,15 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      - name: Require updater signing key for tag releases
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:TAURI_SIGNING_PRIVATE_KEY)) {
+            throw 'Missing TAURI_SIGNING_PRIVATE_KEY repository secret. Tag releases require signed updater artifacts.'
+          }
       - uses: voidzero-dev/setup-vp@v1.19.0
         with:
           node-version: "24"
@@ -37,16 +46,38 @@ jobs:
       - run: python scripts/build-engine.py
       - run: python scripts/smoke-engine.py
       - run: vp run check
+      - run: vp run test
       - run: vp run check:version
+      - run: vp run test:updater-manifest
       - run: vp run build
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
       - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
       - run: cargo test --manifest-path src-tauri/Cargo.toml
-      - run: vp run desktop:build
+      - name: Build manual MSI artifact
+        if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/')
+        run: vp run desktop:build
+      - name: Build signed updater MSI
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ""
+        shell: pwsh
+        run: |
+          $updaterConfig = Join-Path $env:RUNNER_TEMP 'tauri-updater-build.json'
+          '{"bundle":{"createUpdaterArtifacts":true}}' | Set-Content -LiteralPath $updaterConfig -Encoding utf8
+          vp run desktop:build --config "$updaterConfig"
+      - name: Generate signed update manifest
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: vp run update:manifest
       - uses: actions/upload-artifact@v4
         with:
           name: pdf-utils-windows-x64-msi
-          path: src-tauri/target/release/bundle/msi/*.msi
+          path: |
+            src-tauri/target/release/bundle/msi/*.msi
+            src-tauri/target/release/bundle/msi/*.msi.sig
+            src-tauri/target/release/bundle/msi/latest.json
           if-no-files-found: error
   publish:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
@@ -59,15 +90,27 @@ jobs:
         with:
           name: pdf-utils-windows-x64-msi
           path: bundles
-      - name: Publish MSI
+      - name: Publish signed MSI and update manifest
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
-          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            if [[ "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" != "true" ]]; then
+              echo 'This release is already public. Publish a new version instead of replacing signed assets.' >&2
+              exit 1
+            fi
+          else
             gh release create "$RELEASE_TAG" --verify-tag --draft --title "PDF Utils $RELEASE_TAG" --generate-notes
           fi
-          gh release upload "$RELEASE_TAG" bundles/*.msi --clobber
+          shopt -s nullglob
+          installers=(bundles/*.msi)
+          signatures=(bundles/*.msi.sig)
+          if [[ ${#installers[@]} -ne 1 || ${#signatures[@]} -ne 1 || ! -s bundles/latest.json ]]; then
+            echo 'Expected one signed MSI and latest.json.' >&2
+            exit 1
+          fi
+          gh release upload "$RELEASE_TAG" "${installers[@]}" "${signatures[@]}" bundles/latest.json --clobber
           gh release edit "$RELEASE_TAG" --draft=false
