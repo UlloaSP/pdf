@@ -13,8 +13,14 @@ export function useUpdater({ enabled, intervalHours, busy }: UpdaterOptions) {
   // The action reads the current render's busy value, not a delayed effect.
   const busyRef = useRef(busy);
   busyRef.current = busy;
-  const [controller] = useState(() => new UpdateController(isTauri() ? { check } : null, () => busyRef.current));
-  const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot, controller.getSnapshot);
+  const [controller] = useState(
+    () => new UpdateController(isTauri() ? { check } : null, () => busyRef.current),
+  );
+  const snapshot = useSyncExternalStore(
+    controller.subscribe,
+    controller.getSnapshot,
+    controller.getSnapshot,
+  );
 
   useEffect(() => {
     controller.start();
@@ -29,7 +35,9 @@ export function useUpdater({ enabled, intervalHours, busy }: UpdaterOptions) {
   return {
     ...snapshot,
     canAct: snapshot.canAct && !blocked,
-    detail: blocked ? "Termina el procesamiento del PDF antes de reiniciar e instalar." : snapshot.detail,
+    detail: blocked
+      ? "Termina el procesamiento del PDF antes de reiniciar e instalar."
+      : snapshot.detail,
     action: controller.action,
   };
 }

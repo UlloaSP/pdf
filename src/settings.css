@@ -38,7 +38,7 @@
 }
 .settings-eyebrow {
   color: var(--muted);
-  font-size: 0.65rem;
+  font-size: 0.9rem;
   font-weight: 650;
   letter-spacing: 0.14em;
 }
@@ -60,7 +60,7 @@
   color: var(--muted);
 }
 .settings-quiet {
-  font-size: 0.8rem !important;
+  font-size: 0.92rem !important;
   padding: 8px 4px;
 }
 .settings-close {
@@ -98,7 +98,7 @@
   border-radius: 6px;
   background: transparent;
   text-align: left;
-  font-size: 0.85rem;
+  font-size: 0.97rem;
 }
 .settings-nav > button > span {
   width: 17px;
@@ -118,13 +118,13 @@
   margin-top: auto;
   padding: 28px 12px 0;
   color: var(--muted);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
 }
 .settings-nav-foot > span {
   display: block;
   margin-top: 4px;
   max-width: 120px;
-  font-size: 0.68rem;
+  font-size: 0.9rem;
   opacity: 0.8;
 }
 .settings-content {
@@ -147,11 +147,11 @@
 .settings-section-heading p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.83rem;
+  font-size: 0.95rem;
 }
 .settings-group-title {
   margin: 26px 0 11px;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 650;
   color: var(--muted);
 }
@@ -175,12 +175,12 @@
   min-width: 0;
 }
 .settings-row-title {
-  font-size: 0.85rem;
+  font-size: 0.97rem;
   font-weight: 550;
 }
 .settings-row-copy p,
 .settings-folder p {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: var(--muted);
   line-height: 1.55;
   margin: 4px 0 0;
@@ -219,7 +219,7 @@
   border-bottom: 1px solid var(--line);
 }
 .settings-folder label {
-  font-size: 0.85rem;
+  font-size: 0.97rem;
   font-weight: 550;
 }
 .settings-folder > div {
@@ -234,7 +234,7 @@
   background: var(--settings-surface);
   color: var(--text);
   padding: 8px 10px;
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   min-width: 0;
 }
 .settings-folder input {
@@ -253,7 +253,7 @@
   color: var(--text);
   background: var(--settings-raised);
   white-space: nowrap;
-  font-size: 0.78rem;
+  font-size: 0.9rem;
 }
 .settings-folder button:hover,
 .settings-reset button:hover {
@@ -279,7 +279,7 @@
   color: var(--muted);
   min-width: 48px;
   text-align: right;
-  font-size: 0.76rem;
+  font-size: 0.9rem;
   font-variant-numeric: tabular-nums;
 }
 .settings-schemes {
@@ -304,7 +304,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 9px 4px 3px;
-  font-size: 0.77rem;
+  font-size: 0.9rem;
 }
 .settings-theme-preview {
   display: flex;
@@ -373,7 +373,7 @@
   border: 1px solid transparent;
   background: transparent;
   color: var(--muted);
-  font-size: 0.74rem;
+  font-size: 0.9rem;
 }
 .settings-palettes > button[aria-pressed="true"] {
   border-color: var(--line);
@@ -391,7 +391,7 @@
 }
 .settings-hint {
   margin: 0 0 20px;
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   color: var(--muted);
   line-height: 1.7;
 }
@@ -407,11 +407,11 @@
   background: var(--settings-surface);
   color: var(--text);
   border-radius: 5px;
-  font-size: 0.77rem;
+  font-size: 0.9rem;
 }
 .settings-shortcut kbd {
   font-family: inherit;
-  font-size: 0.76rem;
+  font-size: 0.9rem;
   padding: 1px 3px;
 }
 .settings-shortcut.is-recording {
@@ -441,7 +441,7 @@
   position: absolute;
   right: 4px;
   bottom: 2px;
-  font-size: 0.8rem;
+  font-size: 0.92rem;
 }
 .settings-about-brand h3 {
   margin: 0 0 3px;
@@ -451,17 +451,17 @@
 .settings-about-brand p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.92rem;
 }
 .settings-version {
   font-variant-numeric: tabular-nums;
-  font-size: 0.85rem;
+  font-size: 0.97rem;
 }
 .settings-channel {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   color: var(--muted);
 }
 .settings-channel > span {
@@ -478,13 +478,13 @@
 }
 .settings-update h3 {
   margin: 0 0 6px;
-  font-size: 0.92rem;
+  font-size: 1.04rem;
   font-weight: 600;
 }
 .settings-update p {
   margin: 0 0 16px;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   line-height: 1.6;
 }
 .settings-update button {
@@ -502,7 +502,7 @@
 .settings-footnote {
   display: block;
   color: var(--muted);
-  font-size: 0.73rem;
+  font-size: 0.9rem;
   line-height: 1.7;
   margin: 18px 0 0;
 }
@@ -511,14 +511,14 @@
   padding-top: 16px;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 0.7rem;
+  font-size: 0.9rem;
 }
 .settings-error {
   padding: 11px 13px;
   border: 1px solid var(--accent);
   border-radius: 5px;
   background: var(--accent-soft);
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   line-height: 1.6;
 }
 .settings-reset {
@@ -532,7 +532,7 @@
 }
 .settings-reset p {
   flex: 1 1 250px;
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   margin: 0;
 }
 @media (max-width: 780px) {
@@ -578,7 +578,7 @@
     flex: 1;
     justify-content: center;
     padding: 9px 5px;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
   }
   .settings-nav > button > span,
   .settings-nav-foot {

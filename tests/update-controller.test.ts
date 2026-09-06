@@ -5,7 +5,10 @@ import type { DownloadEvent } from "@tauri-apps/plugin-updater";
 function deferred<T>() {
   let resolve!: (value: T) => void;
   let reject!: (error: unknown) => void;
-  const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no; });
+  const promise = new Promise<T>((yes, no) => {
+    resolve = yes;
+    reject = no;
+  });
   return { promise, resolve, reject };
 }
 
@@ -20,7 +23,14 @@ function fixture() {
   let busy = false;
   const controller = new UpdateController(adapter, () => busy);
   controller.start();
-  return { controller, adapter, handle, setBusy: (value: boolean) => { busy = value; } };
+  return {
+    controller,
+    adapter,
+    handle,
+    setBusy: (value: boolean) => {
+      busy = value;
+    },
+  };
 }
 
 describe("UpdateController", () => {
@@ -38,14 +48,27 @@ describe("UpdateController", () => {
     });
     await controller.action();
     expect(adapter.check).toHaveBeenCalledWith({ timeout: 20_000 });
-    expect(controller.getSnapshot()).toMatchObject({ status: "available", label: "Descargar", version: "0.2.0", canAct: true });
+    expect(controller.getSnapshot()).toMatchObject({
+      status: "available",
+      label: "Descargar",
+      version: "0.2.0",
+      canAct: true,
+    });
     await controller.action();
     expect(handle.download.mock.calls[0][1]).toEqual({ timeout: 300_000 });
-    expect(controller.getSnapshot()).toMatchObject({ status: "ready", progress: 100, label: "Reiniciar e instalar" });
+    expect(controller.getSnapshot()).toMatchObject({
+      status: "ready",
+      progress: 100,
+      label: "Reiniciar e instalar",
+    });
     expect(handle.install).not.toHaveBeenCalled();
     await controller.action();
     expect(handle.install).toHaveBeenCalledExactlyOnceWith({ restartAfterInstall: true });
-    expect(controller.getSnapshot()).toMatchObject({ status: "installing", installing: true, canAct: false });
+    expect(controller.getSnapshot()).toMatchObject({
+      status: "installing",
+      installing: true,
+      canAct: false,
+    });
     controller.stop();
   });
 
@@ -55,7 +78,11 @@ describe("UpdateController", () => {
     controller.configureAutomatic(true, 1);
     await controller.action();
     await vi.advanceTimersByTimeAsync(3_600_000);
-    expect(controller.getSnapshot()).toMatchObject({ status: "unavailable", canAct: false, lastChecked: null });
+    expect(controller.getSnapshot()).toMatchObject({
+      status: "unavailable",
+      canAct: false,
+      lastChecked: null,
+    });
     expect(vi.getTimerCount()).toBe(0);
   });
 
@@ -133,7 +160,11 @@ describe("UpdateController", () => {
     await controller.action();
     await controller.action();
     await controller.action();
-    expect(controller.getSnapshot()).toMatchObject({ status: "ready", canAct: true, installing: false });
+    expect(controller.getSnapshot()).toMatchObject({
+      status: "ready",
+      canAct: true,
+      installing: false,
+    });
     await controller.action();
     expect(handle.download).toHaveBeenCalledTimes(1);
     expect(handle.install).toHaveBeenCalledTimes(2);
@@ -166,9 +197,15 @@ describe("UpdateController", () => {
 
   it("distinguishes explicit 404, masked HTTP failure and network failure", async () => {
     const { controller, adapter } = fixture();
-    adapter.check.mockRejectedValueOnce("HTTP status 404").mockRejectedValueOnce("Could not fetch a valid release JSON from the remote").mockRejectedValueOnce("connection timeout");
+    adapter.check
+      .mockRejectedValueOnce("HTTP status 404")
+      .mockRejectedValueOnce("Could not fetch a valid release JSON from the remote")
+      .mockRejectedValueOnce("connection timeout");
     await controller.action();
-    expect(controller.getSnapshot()).toMatchObject({ status: "no-release", detail: "Todavía no hay una versión publicada." });
+    expect(controller.getSnapshot()).toMatchObject({
+      status: "no-release",
+      detail: "Todavía no hay una versión publicada.",
+    });
     await controller.action();
     expect(controller.getSnapshot().status).toBe("error");
     expect(controller.getSnapshot().detail).toContain("Puede que");
@@ -199,7 +236,10 @@ describe("UpdateController", () => {
     const { controller, handle } = fixture();
     const pending = deferred<void>();
     let report: ((event: DownloadEvent) => void) | undefined;
-    handle.download.mockImplementation((callback) => { report = callback; return pending.promise; });
+    handle.download.mockImplementation((callback) => {
+      report = callback;
+      return pending.promise;
+    });
     await controller.action();
     const action = controller.action();
     controller.stop();

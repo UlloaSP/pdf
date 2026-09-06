@@ -46,6 +46,7 @@ jobs:
       - run: python scripts/build-engine.py
       - run: python scripts/smoke-engine.py
       - run: vp run check
+      - run: vp run test
       - run: vp run check:version
       - run: vp run test:updater-manifest
       - run: vp run build
@@ -96,7 +97,12 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
-          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            if [[ "$(gh release view "$RELEASE_TAG" --json isDraft --jq .isDraft)" != "true" ]]; then
+              echo 'This release is already public. Publish a new version instead of replacing signed assets.' >&2
+              exit 1
+            fi
+          else
             gh release create "$RELEASE_TAG" --verify-tag --draft --title "PDF Utils $RELEASE_TAG" --generate-notes
           fi
           shopt -s nullglob

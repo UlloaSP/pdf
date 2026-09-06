@@ -1,12 +1,8 @@
 {
   "name": "pdf-utils",
-  "private": true,
-  "packageManager": "pnpm@11.1.3",
   "version": "0.1.0",
+  "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=22.12.0"
-  },
   "scripts": {
     "dev": "vp dev",
     "check": "vp check --no-fmt",
@@ -16,7 +12,10 @@
     "tauri": "tauri",
     "desktop:dev": "tauri dev",
     "desktop:build": "tauri build --bundles msi",
-    "check:version": "node scripts/check-version.mjs"
+    "check:version": "node scripts/check-version.mjs",
+    "test": "vp test run tests",
+    "test:updater-manifest": "node --test scripts/generate-update-manifest.test.mjs",
+    "update:manifest": "node scripts/generate-update-manifest.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",
@@ -33,5 +32,9 @@
     "typescript": "^7.0.2",
     "vite": "catalog:",
     "vite-plus": "catalog:"
-  }
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "pnpm@11.1.3"
 }

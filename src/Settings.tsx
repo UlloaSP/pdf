@@ -1,7 +1,7 @@
 import { useId, useState, type KeyboardEvent, type ReactNode } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
-import type { AppSettings } from "./settings";
+import type { AppSettings } from "./appSettings";
 
 type Section = "general" | "appearance" | "shortcuts" | "about";
 type ShortcutName = keyof AppSettings["shortcuts"];
@@ -169,7 +169,7 @@ export function Settings({
       return;
     }
     const key = event.key.length === 1 ? event.key.toUpperCase() : event.key;
-    if (!/^[A-Z0-9]$|^F(?:[1-9]|1[0-2])$/.test(key)) {
+    if (!/^[A-Z0-9,./;]$|^F(?:[1-9]|1[0-2])$/.test(key)) {
       setError("Elige una letra, un número o una tecla F1–F12 junto a Ctrl o Alt.");
       return;
     }
@@ -205,7 +205,6 @@ export function Settings({
     <section className="app-settings" aria-label="Ajustes de la aplicación">
       <header className="settings-header">
         <div>
-          <span className="settings-eyebrow">TU ESPACIO DE TRABAJO</span>
           <h1>Ajustes</h1>
         </div>
         <div className="settings-header-actions">
@@ -262,22 +261,10 @@ export function Settings({
               {item.label}
             </button>
           ))}
-          <span className="settings-nav-foot">
-            PDF Utils<span>Hecho para trabajar en local.</span>
-          </span>
         </nav>
         <div className="settings-content" key={section}>
           <div className="settings-section-heading">
             <h2>{activeSection.label}</h2>
-            <p>
-              {section === "general"
-                ? "Las pequeñas decisiones de cada día."
-                : section === "appearance"
-                  ? "Un espacio cómodo, a tu manera."
-                  : section === "shortcuts"
-                    ? "Tus acciones habituales, a un par de teclas."
-                    : "Tu aplicación y sus actualizaciones."}
-            </p>
           </div>
           {error && (
             <p className="settings-error" role="alert">
@@ -566,7 +553,7 @@ export function Settings({
                   disabled={!updater.canAct || checking}
                   onClick={() => void update()}
                 >
-                  {checking ? "Comprobando…" : updater.label}
+                  {updater.label}
                 </button>
                 <span className="settings-footnote">
                   {updater.lastChecked

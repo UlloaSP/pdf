@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import type { AppSettings } from "./appSettings";
 import type { Feature } from "./features";
 
 interface Result {
@@ -10,16 +11,22 @@ interface Result {
 }
 
 export function Workspace({
+  settings,
+  onRememberDestination,
+  locked,
   feature,
   onClose,
   onBusyChange,
 }: {
+  settings: AppSettings;
+  onRememberDestination: (path: string) => void;
+  locked: boolean;
   feature: Feature;
   onClose: () => void;
   onBusyChange: (busy: boolean) => void;
 }) {
   const [inputs, setInputs] = useState<string[]>([]);
-  const [destination, setDestination] = useState("");
+  const [destination, setDestination] = useState(settings.defaultOutputDir);
   const [options, setOptions] = useState<Record<string, string | number | boolean>>(() =>
     Object.fromEntries(
       feature.fields.map((field) => [
@@ -49,12 +56,17 @@ export function Workspace({
   async function chooseDestination() {
     try {
       const selected = await open({ directory: true, multiple: false });
-      if (selected) setDestination(selected);
+      if (selected) {
+        setDestination(selected);
+        if (settings.rememberOutputDir) onRememberDestination(selected);
+      }
     } catch (reason) {
       setError(String(reason));
     }
   }
   async function run() {
+    if (locked || busy) return;
+    onBusyChange(true);
     setBusy(true);
     setError("");
     setOutputs([]);
@@ -93,7 +105,7 @@ export function Workspace({
           Abre la aplicación de escritorio para seleccionar y procesar archivos.
         </p>
       ) : null}
-      <fieldset disabled={busy || !isTauri()}>
+      <fieldset disabled={busy || locked || !isTauri()}>
         <legend>Archivos y opciones</legend>
         <button onClick={chooseFiles}>Seleccionar archivos</button>
         <ol className="file-list">
@@ -179,7 +191,12 @@ export function Workspace({
       {busy ? (
         <div role="status">
           <progress /> Procesando…{" "}
-          <button onClick={() => invoke("cancel_job").catch((reason) => setError(String(reason)))}>
+          <button
+            onClick={() => {
+              if (!settings.confirmCancel || window.confirm("¿Cancelar el procesamiento actual?"))
+                void invoke("cancel_job").catch((reason) => setError(String(reason)));
+            }}
+          >
             Cancelar
           </button>
         </div>

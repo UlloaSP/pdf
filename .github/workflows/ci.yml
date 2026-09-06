@@ -54,6 +54,8 @@ jobs:
       - run: python scripts/build-engine.py
       - run: python scripts/smoke-engine.py
       - run: vp run check
+      - run: vp run test
+      - run: vp run test:updater-manifest
       - run: vp run check:version
       - run: vp run build
       - run: cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
