@@ -53,8 +53,8 @@ test("stages safe asset names without changing signed bytes and uses their exact
   assert.deepEqual(JSON.parse(await readFile(join(f.bundleDir, "latest.json"), "utf8")), result);
   const assetName = new URL(result.platforms["windows-x86_64"].url).pathname.split("/").at(-1);
   assert.deepEqual(
-    (await readdir(f.bundleDir)).sort(),
-    [assetName, `${assetName}.sig`, "latest.json"].sort(),
+    (await readdir(f.bundleDir)).sort((a, b) => a.localeCompare(b)),
+    [assetName, `${assetName}.sig`, "latest.json"].sort((a, b) => a.localeCompare(b)),
   );
   assert.deepEqual(await readFile(join(f.bundleDir, assetName)), msiBytes);
   assert.deepEqual(await readFile(join(f.bundleDir, `${assetName}.sig`)), signatureBytes);
