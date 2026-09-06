@@ -11,8 +11,13 @@ vi.mock("@tauri-apps/api/core", () => ({ invoke: bridge.invoke, isTauri: bridge.
 vi.mock("@tauri-apps/plugin-dialog", () => ({ open: bridge.open }));
 
 const feature: Feature = {
-  id: "example", name: "Ejemplo", description: "Opciones de prueba", category: "Edición",
-  extensions: ["png"], multiple: true, requirements: [],
+  id: "example",
+  name: "Ejemplo",
+  description: "Opciones de prueba",
+  category: "Edición",
+  extensions: ["png"],
+  multiple: true,
+  requirements: [],
   fields: [
     { key: "ratio", label: "Proporción", type: "checkbox", default: false },
     { key: "mode", label: "Modo", type: "select", options: ["A", "B"], default: "A" },
@@ -40,34 +45,62 @@ afterEach(async () => {
 });
 
 async function render(locked = false) {
-  await act(async () => root.render(<Workspace feature={feature} settings={{ ...defaultSettings, defaultOutputDir: "C:/out" }}
-    locked={locked} onClose={vi.fn()} onBusyChange={onBusyChange} onRememberDestination={vi.fn()} />));
+  await act(async () =>
+    root.render(
+      <Workspace
+        feature={feature}
+        settings={{ ...defaultSettings, defaultOutputDir: "C:/out" }}
+        locked={locked}
+        onClose={vi.fn()}
+        onBusyChange={onBusyChange}
+        onRememberDestination={vi.fn()}
+      />,
+    ),
+  );
 }
 function button(text: string): HTMLButtonElement {
-  const element = [...container.querySelectorAll("button")].find((item) => item.textContent?.trim() === text || item.getAttribute("aria-label") === text);
+  const element = [...container.querySelectorAll("button")].find(
+    (item) => item.textContent?.trim() === text || item.getAttribute("aria-label") === text,
+  );
   if (!element) throw new Error(`Missing button: ${text}`);
   return element;
 }
-async function click(element: HTMLElement) { await act(async () => element.click()); }
+async function click(element: HTMLElement) {
+  await act(async () => element.click());
+}
 function control<T extends HTMLElement>(selector: string): T {
   const element = container.querySelector<T>(selector);
   if (!element) throw new Error(`Missing control: ${selector}`);
   return element;
 }
-async function change(element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, value: string) {
-  const prototype = element instanceof HTMLInputElement ? HTMLInputElement.prototype
-    : element instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLSelectElement.prototype;
+async function change(
+  element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement,
+  value: string,
+) {
+  const prototype =
+    element instanceof HTMLInputElement
+      ? HTMLInputElement.prototype
+      : element instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype
+        : HTMLSelectElement.prototype;
   const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
   if (!descriptor?.set) throw new Error("Missing value setter");
   await act(async () => {
     descriptor.set?.call(element, value);
-    element.dispatchEvent(new Event(element instanceof HTMLSelectElement ? "change" : "input", { bubbles: true }));
+    element.dispatchEvent(
+      new Event(element instanceof HTMLSelectElement ? "change" : "input", { bubbles: true }),
+    );
   });
 }
 
 it("preserves typed options and selected file order, then locks controls while the native job runs", async () => {
   let finish!: (value: { ok: boolean; outputs: string[]; error: null }) => void;
-  bridge.invoke.mockImplementation(() => new Promise((resolve) => { finish = resolve; }));
+  bridge.invoke.mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
   await render();
   await click(button("Seleccionar archivos"));
   await click(button("Subir archivo 2"));
@@ -76,10 +109,14 @@ it("preserves typed options and selected file order, then locks controls while t
   await change(control<HTMLInputElement>('input[type="number"]'), "12.5");
   await change(control<HTMLTextAreaElement>("textarea"), "Texto editado");
   await click(button("Ejecutar Ejemplo"));
-  expect(bridge.invoke).toHaveBeenCalledWith("run_tool", { request: {
-    feature: "example", inputs: ["C:/two.png", "C:/one.png"], output_dir: "C:/out",
-    options: { ratio: true, mode: "B", size: 12.5, text: "Texto editado" },
-  } });
+  expect(bridge.invoke).toHaveBeenCalledWith("run_tool", {
+    request: {
+      feature: "example",
+      inputs: ["C:/two.png", "C:/one.png"],
+      output_dir: "C:/out",
+      options: { ratio: true, mode: "B", size: 12.5, text: "Texto editado" },
+    },
+  });
   expect(onBusyChange).toHaveBeenLastCalledWith(true);
   expect(control<HTMLButtonElement>('[role="checkbox"]').disabled).toBe(true);
   expect(button("Volver al catálogo").disabled).toBe(true);
@@ -108,15 +145,22 @@ it("blocks Radix checkboxes and native calls in browser mode and while locked", 
 
 it("requires confirmation before invoking cancellation", async () => {
   let finish!: (value: { ok: boolean; outputs: string[]; error: string }) => void;
-  bridge.invoke.mockImplementation((command: string) => command === "run_tool"
-    ? new Promise((resolve) => { finish = resolve; }) : Promise.resolve());
+  bridge.invoke.mockImplementation((command: string) =>
+    command === "run_tool"
+      ? new Promise((resolve) => {
+          finish = resolve;
+        })
+      : Promise.resolve(),
+  );
   await render();
   await click(button("Ejecutar Ejemplo"));
   await click(button("Cancelar"));
   const dialog = document.querySelector('[role="alertdialog"]');
   expect(dialog?.textContent).toContain("¿Cancelar el procesamiento actual?");
   expect(bridge.invoke).toHaveBeenCalledTimes(1);
-  const confirm = [...(dialog?.querySelectorAll("button") ?? [])].find((item) => item.textContent === "Cancelar procesamiento");
+  const confirm = [...(dialog?.querySelectorAll("button") ?? [])].find(
+    (item) => item.textContent === "Cancelar procesamiento",
+  );
   if (!confirm) throw new Error("Missing cancellation confirmation");
   await click(confirm);
   expect(bridge.invoke).toHaveBeenLastCalledWith("cancel_job");

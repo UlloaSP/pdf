@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useEffect, useState } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -51,14 +53,19 @@ function NativeWindowControls() {
   const maximizeLabel = maximized ? "Restaurar ventana" : "Maximizar ventana";
 
   return (
-    <div className="window-controls" role="group" aria-label="Controles de la ventana">
+    <div className="flex" role="group" aria-label="Controles de la ventana">
       {error ? (
-        <span className="window-control-error" role="status">
-          {error}
-        </span>
+        <Alert
+          variant="destructive"
+          role="status"
+          className="absolute top-11 right-0 max-w-[360px]"
+        >
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       ) : null}
-      <button
-        className="window-control"
+      <Button
+        variant="window"
+        size="window"
         type="button"
         aria-label="Minimizar ventana"
         title="Minimizar ventana"
@@ -76,9 +83,10 @@ function NativeWindowControls() {
         >
           <path d="M1 6h10" />
         </svg>
-      </button>
-      <button
-        className="window-control"
+      </Button>
+      <Button
+        variant="window"
+        size="window"
         type="button"
         aria-label={maximizeLabel}
         title={maximizeLabel}
@@ -103,9 +111,10 @@ function NativeWindowControls() {
             <rect x="1.5" y="1.5" width="9" height="9" />
           )}
         </svg>
-      </button>
-      <button
-        className="window-control window-control-close"
+      </Button>
+      <Button
+        variant="window-close"
+        size="window"
         type="button"
         aria-label="Cerrar ventana"
         title="Cerrar ventana"
@@ -121,7 +130,7 @@ function NativeWindowControls() {
         >
           <path d="m1.5 1.5 9 9m0-9-9 9" />
         </svg>
-      </button>
+      </Button>
     </div>
   );
 }

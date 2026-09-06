@@ -8,4 +8,6 @@ Consulta `docs/feature-contract.md` antes de añadir un motor o formulario. Ejec
 
 Antes de crear o modificar una interfaz, lee y aplica `.claude/skills/frontend-design/SKILL.md` (skill de frontend de Claude, incluida con su licencia). Es la referencia de diseño para Codex y Claude; respeta las necesidades de accesibilidad y el funcionamiento local de esta aplicación.
 
+Usa React con TypeScript, Tailwind CSS v4 y los componentes shadcn de `src/components/ui`. Antes de añadir controles o estilos, consulta `docs/frontend.md`. Los scripts Node se escriben en `.mts` y se comprueban con `scripts/tsconfig.json`; no añadas JavaScript fuente.
+
 Antes de integrar una PR, comprueba el resultado real de CodeRabbit sobre el último commit. Un estado verde que diga «Review skipped» o «Review rate limited» no equivale a revisión. Consulta `docs/gitflow.md` para configurar, recuperar o suplir una revisión bloqueada por el servicio.

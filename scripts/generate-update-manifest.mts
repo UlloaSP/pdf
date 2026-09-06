@@ -20,8 +20,10 @@ interface UpdateManifest {
 
 async function readVersion(path: string): Promise<string> {
   const data: unknown = JSON.parse(await readFile(path, "utf8"));
-  assert.ok(data !== null && typeof data === "object" && "version" in data,
-    "Falta la versión de la aplicación.");
+  assert.ok(
+    data !== null && typeof data === "object" && "version" in data,
+    "Falta la versión de la aplicación.",
+  );
   assert.ok(typeof data.version === "string", "La versión debe ser texto.");
   return data.version;
 }

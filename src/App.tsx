@@ -1,3 +1,12 @@
+import { FileText, ImageIcon, Settings2, RefreshCw, Search, ArrowUpRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/input-group";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from "@/components/ui/empty";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { useEffect, useRef, useState } from "react";
 import { version as packageVersion } from "../package.json";
 import { Settings } from "./Settings";
@@ -6,7 +15,6 @@ import { useUpdater } from "./useUpdater";
 import { getAppInfo } from "./native";
 import { isTauri } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import "./settings.css";
 import { RevealPanel } from "./RevealPanel";
 import { WindowControls } from "./WindowControls";
 import { tools } from "./tools";
@@ -155,87 +163,89 @@ export function App() {
   );
 
   return (
-    <div className="app-shell">
+    <div className="h-full overflow-hidden bg-frame p-(--frame) [--frame:8px] [@media(hover:none)]:[--frame:12px]">
       <RevealPanel side="top" label="Mostrar barra superior">
-        <header className="topbar">
-          <div className="window-drag" data-tauri-drag-region />
+        <header className="flex h-10 items-stretch rounded-none bg-frame text-frame-foreground shadow-lg">
+          <div className="flex-1 select-none" data-tauri-drag-region />
           <WindowControls />
         </header>
       </RevealPanel>
       <RevealPanel side="left" label="Mostrar navegación">
-        <aside className="sidebar">
-          <div className="brand">
-            <span className="brand-mark" aria-hidden="true">
+        <aside className="flex h-full flex-col overflow-hidden rounded-xl border border-border bg-sidebar px-4 py-6 shadow-xl backdrop-blur-xl">
+          <div className="flex items-center gap-3 text-lg font-semibold">
+            <span
+              className="rounded-lg bg-primary px-2 font-serif text-3xl text-primary-foreground"
+              aria-hidden="true"
+            >
               P.
-            </span>{" "}
+            </span>
             PDF Utils
           </div>
-          <nav aria-label="Bibliotecas de herramientas">
-            {(
-              [
-                { id: "pdf", label: "PDF" },
-                { id: "images", label: "Imágenes" },
-              ] as const
-            ).map((item) => (
-              <button
-                key={item.id}
-                disabled={busy || updater.installing}
-                aria-pressed={workspace === item.id}
-                onClick={() => {
-                  setShowSettings(false);
-                  setWorkspace(item.id);
-                  setQuery("");
-                  setSelected(null);
-                }}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  {item.id === "pdf" ? (
-                    <path d="M6 3h8l4 4v14H6Z M14 3v5h4 M9 12h6 M9 16h6" />
-                  ) : (
-                    <>
-                      <rect x="3" y="3" width="18" height="18" rx="2" />
-                      <circle cx="9" cy="9" r="2" />
-                      <path d="m4 19 6-6 4 3 3-5 4 7" />
-                    </>
-                  )}
-                </svg>
-                {item.label}
-              </button>
-            ))}
+          <nav
+            className="mt-8 min-h-0 flex-1 overflow-y-auto [scrollbar-width:thin]"
+            aria-label="Bibliotecas de herramientas"
+          >
+            <ToggleGroup
+              type="single"
+              orientation="vertical"
+              className="w-full"
+              value={workspace}
+              disabled={busy || updater.installing}
+              onValueChange={(value) => {
+                if (value !== "pdf" && value !== "images") return;
+                setShowSettings(false);
+                setWorkspace(value);
+                setQuery("");
+                setSelected(null);
+              }}
+            >
+              <ToggleGroupItem value="pdf" className="h-11 w-full justify-start gap-3">
+                <FileText data-icon="inline-start" />
+                PDF
+              </ToggleGroupItem>
+              <ToggleGroupItem value="images" className="h-11 w-full justify-start gap-3">
+                <ImageIcon data-icon="inline-start" />
+                Imágenes
+              </ToggleGroupItem>
+            </ToggleGroup>
           </nav>
-          <div className="sidebar-footer">
-            <button
+          <Separator className="my-4" />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
               aria-label="Ajustes"
               title="Ajustes"
               aria-pressed={showSettings}
               disabled={updater.installing}
               onClick={() => setShowSettings((current) => !current)}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="m9 3-1 3-3 1-2 5 2 5 3 1 1 3h6l1-3 3-1 2-5-2-5-3-1-1-3Z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </button>
-            <button
-              className="sidebar-update"
+              <Settings2 />
+            </Button>
+            <Button
+              variant="ghost"
+              className="h-auto min-w-0 flex-1 justify-start py-2"
               disabled={!updater.canAct}
               title={`${updater.label}. ${updater.detail}`}
               aria-label={updater.label}
               onClick={() => void updater.action()}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20 7v5h-5M4 17v-5h5M19 11a7 7 0 0 0-12-5M5 13a7 7 0 0 0 12 5" />
-              </svg>
-              <span>{updater.label}</span>
-            </button>
+              <RefreshCw data-icon="inline-start" />
+              <span className="min-w-0 whitespace-normal wrap-anywhere">{updater.label}</span>
+            </Button>
           </div>
         </aside>
       </RevealPanel>
-      <main id="main" ref={main} tabIndex={-1}>
+      <main
+        id="main"
+        ref={main}
+        tabIndex={-1}
+        className="relative h-full min-w-0 overflow-auto rounded-[9px] bg-background px-[clamp(22px,3.6vw,56px)] pt-7 pb-10 outline-none [scrollbar-width:thin] [scrollbar-color:var(--border)_transparent] max-[620px]:p-5"
+      >
         {storageError && (
-          <p role="alert" className="error">
-            {storageError}
-          </p>
+          <Alert variant="destructive">
+            <AlertDescription>{storageError}</AlertDescription>
+          </Alert>
         )}
         {showSettings && (
           <Settings
@@ -249,7 +259,7 @@ export function App() {
         )}
         <div hidden={showSettings} inert={updater.installing}>
           {selected ? (
-            <div className="workspace-shell">
+            <div className="mx-auto my-2 max-w-[1000px]">
               <Workspace
                 key={selected.id}
                 feature={selected}
@@ -262,47 +272,62 @@ export function App() {
             </div>
           ) : (
             <>
-              <div className="catalog-heading">
+              <div className="mb-6 flex min-h-10 items-center gap-3">
                 <h1 className="sr-only">Herramientas de {workspaceLabel}</h1>
-                <label className="search">
-                  <span className="sr-only">Buscar herramienta</span>
-                  <svg aria-hidden="true" viewBox="0 0 24 24">
-                    <circle cx="10.5" cy="10.5" r="6.5" />
-                    <path d="m16 16 4 4" />
-                  </svg>
-                  <input
+                <InputGroup className="h-10 max-w-[310px]">
+                  <InputGroupInput
                     ref={search}
                     type="search"
+                    aria-label="Buscar herramienta"
                     placeholder={`Buscar en ${workspaceLabel}…`}
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                   />
-                </label>
+                  <InputGroupAddon>
+                    <Search />
+                  </InputGroupAddon>
+                </InputGroup>
               </div>
               <p className="sr-only" role="status">
                 {visible.length} herramientas
               </p>
-              <section className="tool-grid" aria-label="Catálogo de utilidades">
+              <section
+                className="grid grid-cols-[repeat(auto-fill,minmax(225px,1fr))] gap-3.5 max-[620px]:grid-cols-2 max-[620px]:gap-2.5 max-[420px]:grid-cols-1"
+                aria-label="Catálogo de utilidades"
+              >
                 {visible.map((tool) => (
-                  <article className="tool-card" key={tool.name}>
-                    <span className="file-icon" aria-hidden="true">
-                      {workspace === "pdf" ? "PDF" : "IMG"}
-                    </span>
-                    <h2>{tool.name}</h2>
-                    <p>{tool.description}</p>
-                    {tool.feature ? (
-                      <button className="open-tool" onClick={() => setSelected(tool.feature!)}>
-                        Abrir <span className="sr-only">{tool.name}</span>
-                        <span aria-hidden="true">↗</span>
-                      </button>
-                    ) : null}
-                  </article>
+                  <Card key={tool.name} role="article" className="min-h-[210px]">
+                    <CardHeader>
+                      <Badge variant="secondary" className="mb-3">
+                        {workspace === "pdf" ? "PDF" : "IMG"}
+                      </Badge>
+                      <CardTitle>
+                        <h2>{tool.name}</h2>
+                      </CardTitle>
+                      <CardDescription>{tool.description}</CardDescription>
+                    </CardHeader>
+                    {tool.feature && (
+                      <CardFooter className="mt-auto">
+                        <Button
+                          variant="link"
+                          className="px-0"
+                          onClick={() => setSelected(tool.feature!)}
+                        >
+                          Abrir <span className="sr-only">{tool.name}</span>
+                          <ArrowUpRight data-icon="inline-end" />
+                        </Button>
+                      </CardFooter>
+                    )}
+                  </Card>
                 ))}
               </section>
               {visible.length === 0 && (
-                <p className="empty">
-                  No hay herramientas con ese nombre. Prueba otra búsqueda o sección.
-                </p>
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyTitle>No hay herramientas con ese nombre</EmptyTitle>
+                    <EmptyDescription>Prueba otra búsqueda o sección.</EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               )}
             </>
           )}

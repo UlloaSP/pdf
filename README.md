@@ -2,6 +2,8 @@
 
 Aplicación de utilidades PDF e imágenes para Windows. React + TypeScript + Vite+ en el frontend, Tauri 2 + Rust como backend local y un worker Python empaquetado para los motores. Sin servidor obligatorio.
 
+La interfaz usa Tailwind CSS v4 y componentes shadcn/ui sobre Radix, personalizados con los temas de la app. Los scripts de mantenimiento también usan TypeScript, ejecutado directamente por Node 24. Consulta las [convenciones del frontend](docs/frontend.md).
+
 El [plan de arquitectura](docs/architecture.md) contiene las decisiones, las 32 utilidades previstas y las fases de implementación.
 
 ## Estado
