@@ -1,0 +1,32 @@
+{
+  "id": "image_from_jpg",
+  "workspace": "images",
+  "name": "Convertir desde JPG",
+  "description": "Convierte JPG a PNG o GIF; crea una animación con imágenes del mismo tamaño en el orden seleccionado.",
+  "category": "Conversión",
+  "extensions": [
+    "jpg",
+    "jpeg"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "format",
+      "label": "Formato de salida",
+      "type": "select",
+      "default": "PNG",
+      "options": [
+        "PNG",
+        "GIF",
+        "GIF animado"
+      ]
+    },
+    {
+      "key": "duration",
+      "label": "Duración por fotograma (ms, múltiplo de 10)",
+      "type": "number",
+      "default": 200
+    }
+  ],
+  "requirements": []
+}
