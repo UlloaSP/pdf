@@ -1,0 +1,108 @@
+from pathlib import Path
+import math
+import uuid
+from PIL import Image, ImageOps, ImageDraw, ImageFont, ImageColor
+
+
+def number(options, key, default, low=0, high=10000, integer=False):
+    try:
+        raw=options.get(key,default)
+        if isinstance(raw,bool): raise ValueError()
+        value=float(raw)
+        if not math.isfinite(value) or not low <= value <= high or (integer and not value.is_integer()): raise ValueError()
+    except (TypeError,ValueError):
+        raise ValueError(f"{key}: introduce un número entre {low} y {high}.") from None
+    return int(value) if integer else value
+
+
+def read_image(path):
+    try:
+        with Image.open(path) as original:
+            if original.width*original.height > 40_000_000 or max(original.size)>20000:
+                raise ValueError("La imagen supera 40 megapíxeles o 20.000 px por lado.")
+            return ImageOps.exif_transpose(original).convert('RGBA')
+    except (OSError,Image.DecompressionBombError) as error:
+        raise ValueError("No se pudo leer una imagen compatible.") from error
+
+
+def read_one(inputs):
+    if len(inputs)!=1: raise ValueError("Selecciona exactamente una imagen.")
+    return read_image(inputs[0])
+
+
+def save(image,output_dir,prefix):
+    folder=Path(output_dir)
+    folder.mkdir(parents=True,exist_ok=True)
+    target=folder/f"{prefix}-{uuid.uuid4().hex}.png"
+    # Rebuild pixels so EXIF and source metadata are not copied into the output.
+    clean=Image.frombytes('RGBA',image.size,image.convert('RGBA').tobytes())
+    with target.open('xb') as stream: clean.save(stream,format='PNG')
+    return [str(target)]
+
+
+def color(value):
+    try: return ImageColor.getcolor(str(value),'RGBA')
+    except (ValueError,TypeError): raise ValueError("Color inválido. Usa un nombre o #RRGGBB.") from None
+
+
+def text_value(value):
+    if not isinstance(value,str) or len(value)>2000: raise ValueError("El texto debe tener como máximo 2.000 caracteres.")
+    try: value.encode('latin-1')
+    except UnicodeEncodeError: raise ValueError("Esta versión admite texto latino Latin-1.") from None
+    if any(ord(c)<32 and c!='\n' for c in value): raise ValueError("El texto contiene caracteres de control.")
+    return value
+
+
+def image_font(size):
+    import reportlab
+    candidates=[Path('C:/Windows/Fonts/arial.ttf'),Path(reportlab.__file__).parent/'fonts/Vera.ttf']
+    for path in candidates:
+        if path.is_file(): return ImageFont.truetype(str(path),size=size)
+    raise ValueError("No se encuentra una fuente Latin-1 compatible.")
+
+
+def text_layer(text,size,fill,stroke=0):
+    font=image_font(size)
+    draw=ImageDraw.Draw(Image.new('RGBA',(1,1)))
+    box=draw.multiline_textbbox((0,0),text,font=font,stroke_width=stroke,align='center')
+    width,height=max(1,math.ceil(box[2]-box[0])),max(1,math.ceil(box[3]-box[1]))
+    if width*height>40_000_000 or max(width,height)>20000: raise ValueError("Texto demasiado grande.")
+    layer=Image.new('RGBA',(width,height))
+    ImageDraw.Draw(layer).multiline_text((-box[0],-box[1]),text,font=font,fill=fill,stroke_width=stroke,stroke_fill='black',align='center')
+    return layer
+
+from PIL import ImageEnhance
+
+
+def run(inputs,output_dir,options):
+    image=read_one(inputs)
+    effect=options.get('effect','Ninguno')
+    if effect not in ('Ninguno','Gris','Sepia','Invertir'): raise ValueError("Efecto desconocido.")
+    alpha=image.getchannel('A')
+    rgb=image.convert('RGB')
+    for key,enhancer in [('brightness',ImageEnhance.Brightness),('contrast',ImageEnhance.Contrast),('saturation',ImageEnhance.Color)]:
+        rgb=enhancer(rgb).enhance(number(options,key,1,0,3))
+    if effect=='Gris': rgb=ImageOps.grayscale(rgb).convert('RGB')
+    elif effect=='Sepia': rgb=ImageOps.colorize(ImageOps.grayscale(rgb),'#261609','#ffe4af')
+    elif effect=='Invertir': rgb=ImageOps.invert(rgb)
+    image=rgb.convert('RGBA'); image.putalpha(alpha)
+    text=text_value(options.get('text',''))
+    if text.strip():
+        layer=text_layer(text,number(options,'font_size',32,8,300,True),color(options.get('text_color','#ffffff')))
+        x,y=number(options,'text_x',10,integer=True),number(options,'text_y',10,integer=True)
+        if x+layer.width>image.width or y+layer.height>image.height: raise ValueError("El texto no cabe en la imagen.")
+        image.alpha_composite(layer,(x,y))
+    sticker_path=str(options.get('sticker_path','')).strip()
+    if sticker_path:
+        sticker=read_image(sticker_path)
+        width=number(options,'sticker_width',100,1,20000,True)
+        height=max(1,round(sticker.height*width/sticker.width))
+        x,y=number(options,'sticker_x',10,integer=True),number(options,'sticker_y',10,integer=True)
+        if x+width>image.width or y+height>image.height: raise ValueError("La pegatina no cabe en la imagen.")
+        image.alpha_composite(sticker.resize((width,height),Image.Resampling.LANCZOS),(x,y))
+    border=number(options,'border',0,0,500,True)
+    if border:
+        size=(image.width+border*2,image.height+border*2)
+        if size[0]*size[1]>40_000_000 or max(size)>20000: raise ValueError("La imagen con borde supera el tamaño permitido.")
+        image=ImageOps.expand(image,border,fill=color(options.get('border_color','#ffffff')))
+    return save(image,output_dir,'editada')
