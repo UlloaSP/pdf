@@ -1,0 +1,45 @@
+{
+  "id": "image_meme",
+  "workspace": "images",
+  "name": "Generador de memes",
+  "description": "Añade texto superior e inferior blanco con contorno negro y ajuste automático.",
+  "category": "Edición",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "bmp",
+    "tif",
+    "tiff",
+    "gif"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "top",
+      "label": "Texto superior",
+      "type": "textarea",
+      "default": "CUANDO TODO FUNCIONA"
+    },
+    {
+      "key": "bottom",
+      "label": "Texto inferior",
+      "type": "textarea",
+      "default": "A LA PRIMERA"
+    },
+    {
+      "key": "font_size",
+      "label": "Tamaño máximo del texto (px)",
+      "type": "number",
+      "default": 48
+    },
+    {
+      "key": "margin",
+      "label": "Margen (px)",
+      "type": "number",
+      "default": 10
+    }
+  ],
+  "requirements": []
+}
