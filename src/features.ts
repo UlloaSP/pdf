@@ -10,6 +10,7 @@ export interface Feature {
   name: string;
   description: string;
   category: string;
+  workspace?: "pdf" | "images";
   extensions: string[];
   multiple: boolean;
   fields: Field[];
@@ -19,6 +20,4 @@ const modules = import.meta.glob<Feature>("./features/*.json", {
   eager: true,
   import: "default",
 });
-export const features = Object.values(modules).sort((a, b) =>
-  a.name.localeCompare(b.name, "es"),
-);
+export const features = Object.values(modules).sort((a, b) => a.name.localeCompare(b.name, "es"));
