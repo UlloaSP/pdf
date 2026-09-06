@@ -25,7 +25,7 @@ it("keeps the last valid shared color when editing an invalid HEX", async () => 
   document.body.append(container);
   root = createRoot(container);
   await act(async () =>
-    root?.render(<Colors searchRef={null} query="" onQueryChange={() => {}} />),
+    root?.render(<Colors searchRef={null} query="__shell_validation_only__" onQueryChange={() => {}} />),
   );
   const input = container.querySelector<HTMLInputElement>("#colors-hex")!;
   const picker = container.querySelector<HTMLInputElement>("#colors-picker")!;
