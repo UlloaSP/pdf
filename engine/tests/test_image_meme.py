@@ -53,3 +53,9 @@ class ImageFeatureTests(unittest.TestCase):
         self.assertGreater(accented.height,plain.height)
         # Different accented vowels must not be the same missing-glyph box.
         self.assertNotEqual(text_layer('ó',32,'white').tobytes(),text_layer('í',32,'white').tobytes())
+
+    def test_long_word_shrinks_before_allocating_large_text_layer(self):
+        from engine.features.image_meme import fit_caption
+        layer=fit_caption('x'*500,150,4000,300)
+        self.assertLessEqual(layer.width,4000)
+        self.assertLessEqual(layer.height,300)

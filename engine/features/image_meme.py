@@ -83,7 +83,12 @@ def fit_caption(text,max_size,max_width,max_height):
                     lines.append(line); line=word
                 else: line=candidate
             lines.append(line)
-        layer=text_layer('\n'.join(lines),size,'white',stroke=max(1,size//16))
+        caption='\n'.join(lines)
+        stroke=max(1,size//16)
+        box=ImageDraw.Draw(Image.new('RGBA',(1,1))).multiline_textbbox((0,0),caption,font=font,stroke_width=stroke,align='center')
+        if box[2]-box[0]>max_width or box[3]-box[1]>max_height:
+            continue
+        layer=text_layer(caption,size,'white',stroke=stroke)
         if layer.width<=max_width and layer.height<=max_height: return layer
     raise ValueError("El texto no cabe. Acórtalo o utiliza una imagen mayor.")
 
