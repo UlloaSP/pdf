@@ -71,6 +71,8 @@ El workflow usa `GITHUB_TOKEN` con escritura solo en el trabajo de publicación.
 
 La gestión de dependencias usa siempre pnpm a través de `vp install`, `vp add` y `vp remove`. No uses npm/npx ni mantengas otros lockfiles. Los scripts se ejecutan con `vp run <script>`; `pnpm run <script>` también usa las mismas herramientas locales. `vp run build` incluye la comprobación TypeScript antes del bundle. `vp run check` ejecuta lint y tipos con Vite+; el formato de los archivos existentes se conserva.
 
+Los scripts `.mts` usan el type stripping nativo de Node 24, sin transpilar en tiempo de ejecución. `vp run typecheck:scripts` aplica `scripts/tsconfig.json` con tipos estrictos y sintaxis borrable; `vp run build` incluye este check. Node no comprueba tipos al ejecutarlos. Consulta la [documentación oficial de Node](https://nodejs.org/docs/latest-v24.x/api/typescript.html).
+
 ## Ajustes de la app
 
 El pie de la sidebar contiene Ajustes y el estado de actualizaciones. Por defecto se comprueba al arrancar, tras 20 segundos, y cada seis horas. Puedes elegir una hora o un día, o desactivar las comprobaciones automáticas. La descarga y la instalación siempre requieren una acción; instalar se bloquea mientras se procesa un documento.

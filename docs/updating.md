@@ -13,7 +13,7 @@ El workflow `Release Windows MSI` conserva dos recorridos:
 
 La configuración habitual conserva `createUpdaterArtifacts: false`. El workflow de etiqueta aplica un archivo de configuración temporal para activarlo solo durante el build firmado. La clave se pasa por el entorno del paso de compilación, con contraseña vacía. No se imprime ni se incorpora a artefactos.
 
-`scripts/generate-update-manifest.mjs` exige coherencia entre la etiqueta, package.json, Tauri y Cargo; una versión MSI estable; un único instalador x64 no vacío; y su firma Minisign completa en base64. Copia la firma real producida por Tauri sin sustituirla por una firma de prueba. La validación de formato del script no sustituye la verificación criptográfica que realiza el updater.
+`scripts/generate-update-manifest.mts` exige coherencia entre la etiqueta, package.json, Tauri y Cargo; una versión MSI estable; un único instalador x64 no vacío; y su firma Minisign completa en base64. Copia la firma real producida por Tauri sin sustituirla por una firma de prueba. La validación de formato del script no sustituye la verificación criptográfica que realiza el updater.
 
 Antes de generar el manifiesto, normaliza los nombres del MSI y de su firma a ASCII seguro, por ejemplo `PDF-Utils_0.1.0_x64_es-ES.msi`. GitHub modifica nombres de assets con espacios; la normalización hace que la URL del manifiesto coincida con el archivo subido. Solo cambia los nombres, conserva los bytes firmados y rechaza colisiones antes de renombrar.
 
@@ -29,6 +29,6 @@ Esta firma protege el archivo que descarga el updater. No equivale a la firma Au
 
 Ejecuta `vp run test:updater-manifest` para probar el generador. En CI, `vp run update:manifest` toma `RELEASE_TAG` y `GITHUB_REPOSITORY` del entorno y escribe el manifiesto junto al MSI firmado.
 
-Los tests de `scripts/generate-update-manifest.test.mjs` usan artefactos temporales para verificar el manifiesto y el rechazo de versiones, firmas e instaladores inválidos. Sus firmas son fixtures estructurales y no se publican. El workflow los ejecuta antes del MSI. Queda pendiente comprobar el recorrido de actualización entre dos releases reales firmadas; generar el manifiesto no prueba la instalación ni el reinicio en Windows.
+Los tests de `scripts/generate-update-manifest.test.mts` usan artefactos temporales para verificar el manifiesto y el rechazo de versiones, firmas e instaladores inválidos. Sus firmas son fixtures estructurales y no se publican. El workflow los ejecuta antes del MSI. Queda pendiente comprobar el recorrido de actualización entre dos releases reales firmadas; generar el manifiesto no prueba la instalación ni el reinicio en Windows.
 
 Una ejecución repetida solo puede completar una release en borrador. El workflow rechaza reemplazar assets de una release pública para evitar descoordinar el instalador y su firma.
