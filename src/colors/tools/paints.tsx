@@ -504,7 +504,7 @@ function OnlineCatalog({ color, onColorChange }: ColorToolProps) {
       </p>
       {error && (
         <Alert variant="destructive">
-          <AlertDescription role="alert">{error}</AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
       {remoteProfile && (

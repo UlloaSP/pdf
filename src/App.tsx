@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { version as packageVersion } from "../package.json";
 import { Settings } from "./Settings";
 import { useSettings, shortcutFor } from "./appSettings";
@@ -28,7 +28,7 @@ import { WindowControls } from "./WindowControls";
 import { tools } from "./tools";
 import { features, type Feature } from "./features";
 import { Workspace } from "./Workspace";
-import { Colors } from "./colors/Colors";
+const Colors = lazy(() => import("./colors/Colors").then((module) => ({ default: module.Colors })));
 
 const ids = [
   "merge",
@@ -273,7 +273,9 @@ export function App() {
         )}
         <div hidden={showSettings} inert={updater.installing}>
           {workspace === "colors" ? (
-            <Colors searchRef={search} query={query} onQueryChange={setQuery} />
+            <Suspense fallback={<p role="status">Cargando herramientas de color…</p>}>
+              <Colors searchRef={search} query={query} onQueryChange={setQuery} />
+            </Suspense>
           ) : selected ? (
             <div className="mx-auto my-2 max-w-[1000px]">
               <Workspace
