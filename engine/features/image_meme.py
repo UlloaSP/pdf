@@ -53,8 +53,16 @@ def text_value(value):
     return value
 
 
+def image_font(size):
+    import reportlab
+    candidates=[Path('C:/Windows/Fonts/arial.ttf'),Path(reportlab.__file__).parent/'fonts/Vera.ttf']
+    for path in candidates:
+        if path.is_file(): return ImageFont.truetype(str(path),size=size)
+    raise ValueError("No se encuentra una fuente Latin-1 compatible.")
+
+
 def text_layer(text,size,fill,stroke=0):
-    font=ImageFont.load_default(size=size)
+    font=image_font(size)
     draw=ImageDraw.Draw(Image.new('RGBA',(1,1)))
     box=draw.multiline_textbbox((0,0),text,font=font,stroke_width=stroke,align='center')
     width,height=max(1,math.ceil(box[2]-box[0])),max(1,math.ceil(box[3]-box[1]))
@@ -65,16 +73,16 @@ def text_layer(text,size,fill,stroke=0):
 
 def fit_caption(text,max_size,max_width,max_height):
     for size in range(max_size,7,-1):
-        font=ImageFont.load_default(size=size)
+        font=image_font(size)
         lines=[]
         for paragraph in text.split('\n'):
             line=''
-            for char in paragraph:
-                candidate=line+char
+            for word in paragraph.split():
+                candidate=f"{line} {word}" if line else word
                 if font.getlength(candidate)>max_width-6 and line:
-                    lines.append(line.rstrip()); line=char.lstrip()
+                    lines.append(line); line=word
                 else: line=candidate
-            lines.append(line.rstrip())
+            lines.append(line)
         layer=text_layer('\n'.join(lines),size,'white',stroke=max(1,size//16))
         if layer.width<=max_width and layer.height<=max_height: return layer
     raise ValueError("El texto no cabe. Acórtalo o utiliza una imagen mayor.")

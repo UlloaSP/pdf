@@ -45,3 +45,11 @@ class ImageFeatureTests(unittest.TestCase):
     def test_rejects_unfittable_or_invalid_text(self):
         for options in [{'top':'','bottom':''},{'top':'x'*2001},{'margin':200},{'font_size':float('nan')},{'top':'漢'}]:
             with self.subTest(options=options),self.assertRaises(ValueError): run([self.path],str(self.out),options)
+
+    def test_accented_glyphs_have_distinct_rendering(self):
+        from engine.features.image_meme import text_layer
+        plain=text_layer('o',32,'white')
+        accented=text_layer('ó',32,'white')
+        self.assertGreater(accented.height,plain.height)
+        # Different accented vowels must not be the same missing-glyph box.
+        self.assertNotEqual(text_layer('ó',32,'white').tobytes(),text_layer('í',32,'white').tobytes())
