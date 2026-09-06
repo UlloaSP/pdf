@@ -1,0 +1,29 @@
+{
+  "id": "image_compress",
+  "name": "Comprimir imágenes",
+  "description": "Optimiza PNG sin pérdida y recodifica JPG/GIF con calidad configurable. Conserva la animación GIF. El ahorro depende de la imagen.",
+  "workspace": "images",
+  "category": "Edición",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "quality",
+      "label": "Calidad JPG (1–95, con pérdida)",
+      "type": "number",
+      "default": 85
+    },
+    {
+      "key": "gif_colors",
+      "label": "Máximo de colores GIF (2–256, puede perder colores)",
+      "type": "number",
+      "default": 256
+    }
+  ],
+  "requirements": []
+}
