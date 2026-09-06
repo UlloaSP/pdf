@@ -78,9 +78,7 @@ export function App() {
     <div className="app-shell">
       <RevealPanel side="top" label="Mostrar barra superior">
         <header className="topbar">
-          <div className="window-drag" data-tauri-drag-region>
-            <span data-tauri-drag-region>PDF Utils</span>
-          </div>
+          <div className="window-drag" data-tauri-drag-region />
           <WindowControls />
         </header>
       </RevealPanel>
