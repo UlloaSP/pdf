@@ -14,7 +14,7 @@ def run(inputs, output_dir, options):
         duration = int(options.get("duration", 200))
         if str(options.get("duration", 200)) != str(duration) or not 20 <= duration <= 10000 or duration % 10:
             raise ValueError()
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, OverflowError):
         raise ValueError("Duración: múltiplo de 10 entre 20 y 10000 ms.") from None
     if kind == "GIF animado" and len(inputs) < 2:
         raise ValueError("Selecciona al menos dos JPG para animar.")

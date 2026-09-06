@@ -68,3 +68,8 @@ class ImageFromJpgTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             feature.run([source], str(self.root / "out"), {})
         self.assertEqual(Path(result[0]).read_bytes(), before)
+
+    def test_nonfinite_duration(self):
+        for value in (float("inf"), float("-inf"), float("nan")):
+            with self.assertRaises(ValueError):
+                feature.run(["unused"], str(self.root), {"duration": value})
