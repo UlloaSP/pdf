@@ -582,3 +582,17 @@ input:focus-visible {
 [hidden] {
   display: none !important;
 }
+
+.sidebar nav button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sidebar nav button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+}
