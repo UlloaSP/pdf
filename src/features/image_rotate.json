@@ -1,0 +1,39 @@
+{
+  "id": "image_rotate",
+  "name": "Rotar imágenes",
+  "description": "Gira 90°, 180° o 270° en sentido horario, después de normalizar EXIF. Puede seleccionar solo imágenes horizontales o verticales. Conserva GIF animado.",
+  "workspace": "images",
+  "category": "Edición",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "angle",
+      "label": "Giro horario",
+      "type": "select",
+      "default": "90",
+      "options": [
+        "90",
+        "180",
+        "270"
+      ]
+    },
+    {
+      "key": "orientation",
+      "label": "Aplicar a",
+      "type": "select",
+      "default": "Todas",
+      "options": [
+        "Todas",
+        "Horizontales",
+        "Verticales"
+      ]
+    }
+  ],
+  "requirements": []
+}
