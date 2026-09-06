@@ -1,0 +1,51 @@
+{
+  "id": "image_resize",
+  "name": "Redimensionar imágenes",
+  "description": "Cambia el tamaño por porcentaje o dimensiones. Admite JPG, PNG estático y GIF animado. Conserva proporciones cuando se indica.",
+  "workspace": "images",
+  "category": "Edición",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "mode",
+      "label": "Modo",
+      "type": "select",
+      "default": "Porcentaje",
+      "options": [
+        "Porcentaje",
+        "Dimensiones"
+      ]
+    },
+    {
+      "key": "percent",
+      "label": "Porcentaje (1–1000)",
+      "type": "number",
+      "default": 50
+    },
+    {
+      "key": "width",
+      "label": "Ancho máximo (px)",
+      "type": "number",
+      "default": 800
+    },
+    {
+      "key": "height",
+      "label": "Alto máximo (px)",
+      "type": "number",
+      "default": 600
+    },
+    {
+      "key": "keep_ratio",
+      "label": "Conservar proporción y encajar en las dimensiones",
+      "type": "checkbox",
+      "default": true
+    }
+  ],
+  "requirements": []
+}
