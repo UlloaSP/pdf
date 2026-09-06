@@ -147,6 +147,7 @@ function LocalCatalog({ color, onColorChange }: ColorToolProps) {
             <Field>
               <FieldLabel htmlFor="paint-local-brand">Marca</FieldLabel>
               <NativeSelect
+                className="w-full"
                 id="paint-local-brand"
                 value={brand}
                 onChange={(e) => {
@@ -203,7 +204,7 @@ function LocalCatalog({ color, onColorChange }: ColorToolProps) {
             </p>
             <Button
               variant="outline"
-              onClick={() => download(JSON.stringify(paints, null, 2), "catalogo-pinturas.json")}
+              onClick={() => download(JSON.stringify(paints), "catalogo-pinturas.json")}
             >
               Exportar catálogo
             </Button>
@@ -218,8 +219,8 @@ function LocalCatalog({ color, onColorChange }: ColorToolProps) {
                     role="img"
                     aria-label={paint.hex}
                   />
-                  <CardTitle>{paint.name}</CardTitle>
-                  <CardDescription>{paint.brand}</CardDescription>
+                  <CardTitle className="wrap-anywhere">{paint.name}</CardTitle>
+                  <CardDescription className="wrap-anywhere">{paint.brand}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-2">
                   <span className="text-xs">
@@ -410,6 +411,7 @@ function OnlineCatalog({ color, onColorChange }: ColorToolProps) {
         <Field>
           <FieldLabel htmlFor="paint-online-brand">Marca de pintura</FieldLabel>
           <NativeSelect
+            className="w-full"
             id="paint-online-brand"
             value={brand}
             onChange={(e) => setBrand(e.target.value)}
@@ -527,7 +529,7 @@ function OnlineCatalog({ color, onColorChange }: ColorToolProps) {
                   role="img"
                   aria-label={sample.hex}
                 />
-                <CardTitle>{sample.label}</CardTitle>
+                <CardTitle className="wrap-anywhere">{sample.label}</CardTitle>
                 <CardDescription>
                   {sample.hex}
                   {sample.delta !== undefined ? ` · ΔE ${sample.delta.toFixed(2)}` : ""}

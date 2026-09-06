@@ -43,6 +43,12 @@ describe("local paint catalogs", () => {
       "Negro",
     ]);
   });
+  it("round-trips canonical exports and rejects UTF-8 catalogs larger than the import limit", () => {
+    const valid = parseCatalog(JSON.stringify(catalog));
+    expect(parseCatalog(JSON.stringify(valid))).toEqual(valid);
+    const huge = Array.from({ length: 4000 }, (_, i) => ({ brand: "色".repeat(120), name: `${i}${"色".repeat(190)}`, hex: "#123" }));
+    expect(() => parseCatalog(JSON.stringify(huge))).toThrow("normalizado");
+  });
   it("places boundary colors in valid histogram bins and excludes achromatic hue", () => {
     const profile = distribution(catalog);
     expect(profile.hue.reduce((a, b) => a + b, 0)).toBe(1);

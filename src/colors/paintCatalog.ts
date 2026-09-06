@@ -16,7 +16,7 @@ export function parseCatalog(text: string): Paint[] {
   if (!Array.isArray(data) || !data.length || data.length > catalogLimit)
     throw new Error("El JSON debe ser una lista de 1 a 10.000 pinturas.");
   const seen = new Set<string>();
-  return data.map((entry: unknown, index) => {
+  const paints = data.map((entry: unknown, index) => {
     if (!entry || typeof entry !== "object") throw new Error(`Pintura ${index + 1} inválida.`);
     const item = entry as Record<string, unknown>;
     const hex = typeof item.hex === "string" ? normalizeHex(item.hex) : null;
@@ -36,6 +36,9 @@ export function parseCatalog(text: string): Paint[] {
     seen.add(key);
     return paint;
   });
+  if (new TextEncoder().encode(JSON.stringify(paints)).byteLength > 2_000_000)
+    throw new Error("El catálogo normalizado supera 2 MB.");
+  return paints;
 }
 const normalize = (s: string) =>
   s
