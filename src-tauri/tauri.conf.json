@@ -26,6 +26,13 @@
       "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' asset: http://asset.localhost data:; connect-src ipc: http://ipc.localhost; object-src 'none'; base-uri 'self'; frame-src 'none'"
     }
   },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDY0MDI3MUUwRTA2MzRFNwpSV1RuTkFZT0hpZEFCampKQzRabzYxbzJvQ3liaHVsK3REMEF4VU5BZitOcU43a0FkcGJKWnRYVgo=",
+      "endpoints": ["https://github.com/UlloaSP/pdf/releases/latest/download/latest.json"],
+      "windows": { "installMode": "passive" }
+    }
+  },
   "bundle": {
     "externalBin": ["binaries/pdf-worker"],
     "active": true,
