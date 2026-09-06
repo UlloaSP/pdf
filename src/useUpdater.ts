@@ -36,7 +36,7 @@ export function useUpdater({ enabled, intervalHours, busy }: UpdaterOptions) {
     ...snapshot,
     canAct: snapshot.canAct && !blocked,
     detail: blocked
-      ? "Termina el procesamiento del PDF antes de reiniciar e instalar."
+      ? "Termina el procesamiento del archivo antes de reiniciar e instalar."
       : snapshot.detail,
     action: controller.action,
   };
