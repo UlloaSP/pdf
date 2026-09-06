@@ -1,0 +1,31 @@
+{
+  "id": "image_upscale",
+  "workspace": "images",
+  "name": "Ampliar imagen",
+  "description": "Amplía imágenes estáticas 2× o 4× mediante interpolación Lanczos. No utiliza IA ni inventa detalle.",
+  "category": "Avanzadas",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "bmp",
+    "tif",
+    "tiff",
+    "gif"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "factor",
+      "label": "Factor de ampliación",
+      "type": "select",
+      "default": "2",
+      "options": [
+        "2",
+        "4"
+      ]
+    }
+  ],
+  "requirements": []
+}
