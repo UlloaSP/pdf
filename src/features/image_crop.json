@@ -1,0 +1,41 @@
+{
+  "id": "image_crop",
+  "name": "Recortar imágenes",
+  "description": "Recorta un rectángulo en píxeles desde la esquina superior izquierda. Normaliza la orientación EXIF y aplica el mismo recorte a todos los fotogramas GIF.",
+  "workspace": "images",
+  "category": "Edición",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "x",
+      "label": "X desde la izquierda (px)",
+      "type": "number",
+      "default": 0
+    },
+    {
+      "key": "y",
+      "label": "Y desde arriba (px)",
+      "type": "number",
+      "default": 0
+    },
+    {
+      "key": "width",
+      "label": "Ancho (px)",
+      "type": "number",
+      "default": 100
+    },
+    {
+      "key": "height",
+      "label": "Alto (px)",
+      "type": "number",
+      "default": 100
+    }
+  ],
+  "requirements": []
+}
