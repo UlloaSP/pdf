@@ -1,6 +1,6 @@
-# Entrega de utilidades PDF
+# Entrega de utilidades PDF e imágenes
 
-Las 32 PRs de utilidad están integradas en develop, con revisión independiente y CI aprobado antes de cada merge. main conserva el commit inicial; esta entrega no publica una release de producto.
+Las 45 utilidades están integradas en develop, con revisión independiente y CI aprobado antes de cada merge. main conserva la base inicial y la sincronización de CodeRabbit; esta entrega no publica una release de producto.
 
 Seguimiento: la [PR #36](https://github.com/UlloaSP/pdf/pull/36) configura CodeRabbit para todos los destinos, incorpora la skill frontend-design de Claude y documenta el arranque local. La [PR #37](https://github.com/UlloaSP/pdf/pull/37) sincroniza exclusivamente el YAML con main. El esquema oficial valida la configuración; CodeRabbit la reconoce, pero sus límites de estrellas y cuota OSS impiden confirmar revisiones automáticas efectivas. El procedimiento de revisión sustituta está en `docs/gitflow.md`; los resultados de CI y los merges se consultan en cada PR.
 
@@ -73,7 +73,7 @@ Estos motores/modelos no se descargan automáticamente. Los casos de ausencia, e
 
 ## Evidencia de validación
 
-La suite conjunta pasa 114 pruebas Python: 33 de páginas y edición, 38 de conversión, 40 de utilidades avanzadas y 3 del runner/contrato. La suite incluye PDFs generados, preservación de formularios, cifrado/descifrado y comprobación de píxeles de redacción. Los motores externos se simulan en su frontera, como indica la tabla anterior.
+La suite conjunta pasa 204 pruebas Python: las 114 anteriores de PDF y contrato, y 90 nuevas de imágenes. Incluye PDFs e imágenes generados, preservación de formularios, cifrado/descifrado y comprobación de píxeles de redacción. Los motores externos se simulan en su frontera, como indica la tabla anterior.
 
 El worker empaquetado supera 13 ejecuciones funcionales más el rechazo de un identificador desconocido. Se comprueban páginas, texto, imágenes, formularios, cifrado, archivos de salida y originales intactos. El smoke corre fuera del checkout para impedir que importe accidentalmente módulos fuente.
 
@@ -92,3 +92,31 @@ La [PR #41](https://github.com/UlloaSP/pdf/pull/41) incorpora preferencias local
 Se probó la interfaz en navegador a 580 x 500, texto de 18 px, persistencia tras recargar, recuperación de preferencias corruptas, atajos personalizados y conservación del formulario al abrir ajustes. La app nativa consultó el endpoint real y mostró el manifiesto no disponible, sin presentarlo como una versión actualizada. No existe aún la primera release; queda pendiente probar descarga, instalación y reinicio entre dos releases publicadas. La firma del actualizador no es Authenticode. Detalles en [actualizaciones](updating.md).
 
 La revisión independiente detectó y corrigió el nombre de asset con espacios, la sobrescritura de releases públicas y dos detalles de interfaz. El resultado de CI y la disponibilidad real de CodeRabbit quedan registrados en la PR.
+
+## Biblioteca de imágenes
+
+La [PR #42](https://github.com/UlloaSP/pdf/pull/42) sustituye los filtros de categorías por PDF e Imágenes. Las 32 herramientas anteriores permanecen en PDF. La búsqueda se limita a la sección activa y se limpia al cambiar de sección. Se conserva la navegación por hover y teclado, el marco, los ajustes y el actualizador.
+
+Cada utilidad nueva tiene formulario, motor, pruebas y documentación propia. Las PR de esta tabla están integradas en develop; los enlaces de utilidad detallan los formatos y límites.
+
+| Utilidad | PR | Alcance |
+|---|---|---|
+| [Comprimir](features/image_compress.md) | [#43](https://github.com/UlloaSP/pdf/pull/43) | JPG, PNG de 8 bits y GIF animado; el ahorro depende del archivo. |
+| [Redimensionar](features/image_resize.md) | [#44](https://github.com/UlloaSP/pdf/pull/44) | Por píxeles o porcentaje, con proporción opcional. |
+| [Recortar](features/image_crop.md) | [#45](https://github.com/UlloaSP/pdf/pull/45) | Rectángulo definido por coordenadas en píxeles. |
+| [Convertir a JPG](features/image_to_jpg.md) | [#46](https://github.com/UlloaSP/pdf/pull/46) | PNG, GIF, TIFF, BMP, WebP y PSD; fondo blanco para alfa. Sin SVG, HEIC ni RAW. |
+| [Convertir desde JPG](features/image_from_jpg.md) | [#47](https://github.com/UlloaSP/pdf/pull/47) | PNG, GIF y GIF animado con imágenes de igual tamaño. |
+| [Editor de fotos](features/image_edit.md) | [#48](https://github.com/UlloaSP/pdf/pull/48) | Ajustes de color, efectos, texto, marco y pegatina local mediante formulario. |
+| [Ampliar](features/image_upscale.md) | [#49](https://github.com/UlloaSP/pdf/pull/49) | Lanczos 2x o 4x, sin reconstrucción mediante IA. |
+| [Eliminar fondo](features/image_remove_background.md) | [#50](https://github.com/UlloaSP/pdf/pull/50) | rembg externo y modelo U2NET local; salida PNG con alfa. |
+| [Marca de agua](features/image_watermark.md) | [#51](https://github.com/UlloaSP/pdf/pull/51) | Texto o imagen con posición y opacidad. |
+| [Crear meme](features/image_meme.md) | [#52](https://github.com/UlloaSP/pdf/pull/52) | Texto superior e inferior sobre una imagen propia. |
+| [Girar](features/image_rotate.md) | [#53](https://github.com/UlloaSP/pdf/pull/53) | 90, 180 o 270 grados; filtro de orientación. |
+| [HTML a imagen](features/image_html.md) | [#54](https://github.com/UlloaSP/pdf/pull/54) | Chrome o Edge instalado, HTML local o URL, captura del área configurada en PNG/JPG. |
+| [Pixelar](features/image_pixelate.md) | [#55](https://github.com/UlloaSP/pdf/pull/55) | Regiones manuales para pixelar o desenfocar; sin detección automática de caras. |
+
+La unión de las ramas se probó antes de integrar y coincide con el código entregado. Pasaron 204 pruebas Python, 18 de frontend, lint, tipos y build. El worker compilado ejecutó 18 operaciones reales sobre las 11 utilidades de Pillow fuera del checkout, verificando dimensiones, píxeles, animación, transparencia y originales intactos. HTML a imagen se probó con Chrome real y un documento local con CSS. La inferencia real de rembg queda pendiente de instalar un modelo compatible; sus pruebas simulan el proceso externo. No se descargan modelos automáticamente.
+
+En navegador se abrieron los 13 formularios de Imágenes y se verificaron las 32 tarjetas de PDF, la búsqueda por sección y el cambio entre bibliotecas. A 580 x 500 no apareció scroll externo ni desbordamiento horizontal. El CI completo de develop genera el MSI del conjunto; instalarlo y desinstalarlo en una VM limpia sigue pendiente.
+
+CodeRabbit completó la revisión de la PR #42. Sus intentos manuales sobre las PR #43 a #55 devolvieron «Review rate limited»; cada PR registra una revisión independiente de otro agente, el commit revisado y CI aprobado, conforme al procedimiento de Gitflow. Estos estados limitados no se contabilizan como revisiones de CodeRabbit aprobadas.
