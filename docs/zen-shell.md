@@ -6,7 +6,7 @@ El documento exterior no tiene scroll. El desplazamiento se limita al contenido 
 
 Con teclado, Tab permite llegar a los bordes y desplegar sus controles; Escape cierra el panel y lleva el foco al contenido. Los paneles cerrados son inertes. En pantallas táctiles se abren tocando el borde y se cierran al tocar fuera. Se respeta la preferencia de movimiento reducido.
 
-Windows utiliza una barra propia con minimizar, maximizar/restaurar y cerrar. La zona del título permite arrastrar la ventana. En la vista web estos controles nativos no se muestran. Las categorías se desactivan mientras se procesa un documento para evitar abandonar un trabajo activo.
+Windows utiliza una barra propia sin texto y con esquinas rectas, con minimizar, maximizar/restaurar y cerrar. La zona vacía permite arrastrar la ventana. En la vista web estos controles nativos no se muestran. Las categorías se desactivan mientras se procesa un documento para evitar abandonar un trabajo activo.
 
 Se retiran los mensajes promocionales y de desarrollo, el pie con estado del motor, los contadores visibles y las etiquetas de disponibilidad. Se conservan nombres, descripciones, búsqueda y avisos necesarios dentro de cada utilidad. El recuento permanece accesible para lectores de pantalla.
 
