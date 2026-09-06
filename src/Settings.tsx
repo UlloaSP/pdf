@@ -1,4 +1,4 @@
-import { useId, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { open } from "@tauri-apps/plugin-dialog";
 import { cn } from "cn";
@@ -195,6 +195,7 @@ export function Settings({
   updater,
 }: SettingsProps) {
   const [section, setSection] = useState<Section>("general");
+  const content = useRef<HTMLDivElement>(null);
   const [recording, setRecording] = useState<ShortcutName | null>(null);
   const [error, setError] = useState("");
   const [checking, setChecking] = useState(false);
@@ -327,6 +328,7 @@ export function Settings({
       <Tabs
         value={section}
         onValueChange={(value) => {
+          if (content.current) content.current.scrollTop = 0;
           setSection(value as Section);
           setRecording(null);
           setError("");
@@ -343,7 +345,10 @@ export function Settings({
             ))}
           </TabsList>
         </nav>
-        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-5 @sm/settings:px-6">
+        <div
+          ref={content}
+          className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-5 @sm/settings:px-6"
+        >
           {sections.map(({ id }) => (
             <TabsContent
               key={id}
