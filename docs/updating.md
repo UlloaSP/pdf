@@ -15,6 +15,8 @@ La configuración habitual conserva `createUpdaterArtifacts: false`. El workflow
 
 `scripts/generate-update-manifest.mjs` exige coherencia entre la etiqueta, package.json, Tauri y Cargo; una versión MSI estable; un único instalador x64 no vacío; y su firma Minisign completa en base64. Copia la firma real producida por Tauri sin sustituirla por una firma de prueba. La validación de formato del script no sustituye la verificación criptográfica que realiza el updater.
 
+Antes de generar el manifiesto, normaliza los nombres del MSI y de su firma a ASCII seguro, por ejemplo `PDF-Utils_0.1.0_x64_es-ES.msi`. GitHub modifica nombres de assets con espacios; la normalización hace que la URL del manifiesto coincida con el archivo subido. Solo cambia los nombres, conserva los bytes firmados y rechaza colisiones antes de renombrar.
+
 Antes de etiquetar, sigue `docs/gitflow.md`, promociona la versión aprobada a `main` y actualiza las versiones coordinadas. El workflow detiene una release de etiqueta si falta el secreto o si los artefactos no cumplen las comprobaciones.
 
 ## Claves y firma del instalador

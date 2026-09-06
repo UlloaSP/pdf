@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { generateUpdateManifest } from "./generate-update-manifest.mjs";
@@ -37,18 +37,54 @@ async function fixture(t) {
   };
 }
 
-test("manifest uses exact signature, encoded MSI URL and Windows x64 platform", async (t) => {
+test("stages safe asset names without changing signed bytes and uses their exact URL", async (t) => {
   const f = await fixture(t);
+  const msiBytes = await readFile(join(f.bundleDir, f.installer));
+  const signatureBytes = await readFile(join(f.bundleDir, `${f.installer}.sig`));
   const result = await generateUpdateManifest(f);
   assert.equal(result.version, "1.2.3");
   assert.equal(result.pub_date, "2026-09-06T10:00:00.000Z");
   assert.deepEqual(result.platforms, {
     "windows-x86_64": {
       signature: f.signature,
-      url: "https://github.com/UlloaSP/pdf/releases/download/v1.2.3/PDF%20Utils_1.2.3_x64_es-ES.msi",
+      url: "https://github.com/UlloaSP/pdf/releases/download/v1.2.3/PDF-Utils_1.2.3_x64_es-ES.msi",
     },
   });
   assert.deepEqual(JSON.parse(await readFile(join(f.bundleDir, "latest.json"), "utf8")), result);
+  const assetName = new URL(result.platforms["windows-x86_64"].url).pathname.split("/").at(-1);
+  assert.deepEqual(
+    (await readdir(f.bundleDir)).sort(),
+    [assetName, `${assetName}.sig`, "latest.json"].sort(),
+  );
+  assert.deepEqual(await readFile(join(f.bundleDir, assetName)), msiBytes);
+  assert.deepEqual(await readFile(join(f.bundleDir, `${assetName}.sig`)), signatureBytes);
+  assert.deepEqual(await generateUpdateManifest(f), result);
+});
+
+test("rejects a normalized signature collision before renaming either artifact", async (t) => {
+  const f = await fixture(t);
+  const originalMsi = await readFile(join(f.bundleDir, f.installer));
+  const originalSignature = await readFile(join(f.bundleDir, `${f.installer}.sig`));
+  const collision = "PDF-Utils_1.2.3_x64_es-ES.msi.sig";
+  await writeFile(join(f.bundleDir, collision), "existing signature");
+  await assert.rejects(generateUpdateManifest(f), /Colisión/);
+  assert.deepEqual(await readFile(join(f.bundleDir, f.installer)), originalMsi);
+  assert.deepEqual(await readFile(join(f.bundleDir, `${f.installer}.sig`)), originalSignature);
+  assert.equal(await readFile(join(f.bundleDir, collision), "utf8"), "existing signature");
+  await assert.rejects(readFile(join(f.bundleDir, "PDF-Utils_1.2.3_x64_es-ES.msi")), {
+    code: "ENOENT",
+  });
+  await assert.rejects(readFile(join(f.bundleDir, "latest.json")), { code: "ENOENT" });
+});
+
+test("rejects an existing normalized MSI without replacing either file", async (t) => {
+  const f = await fixture(t);
+  const collision = "PDF-Utils_1.2.3_x64_es-ES.msi";
+  await writeFile(join(f.bundleDir, collision), "existing MSI");
+  await assert.rejects(generateUpdateManifest(f), /exactamente un MSI/);
+  assert.equal(await readFile(join(f.bundleDir, collision), "utf8"), "existing MSI");
+  assert.equal(await readFile(join(f.bundleDir, f.installer), "utf8"), "fixture MSI bytes");
+  assert.equal(await readFile(join(f.bundleDir, `${f.installer}.sig`), "utf8"), `${f.signature}\n`);
 });
 
 test("rejects a tag for a different version before writing a manifest", async (t) => {

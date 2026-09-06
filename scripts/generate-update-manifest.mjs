@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { readFile, readdir, rename, stat, writeFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -63,6 +63,20 @@ export async function generateUpdateManifest({
     "Se requiere exactamente un MSI para evitar publicar un instalador ambiguo.",
   );
   const [installer] = installers;
+  const assetName = installer.replace(/[^A-Za-z0-9._-]+/g, "-");
+  assert.match(
+    assetName,
+    /^[A-Za-z0-9][A-Za-z0-9._-]*\.msi$/,
+    "Nombre de instalador no publicable.",
+  );
+  if (assetName !== installer) {
+    for (const target of [assetName, `${assetName}.sig`]) {
+      assert.ok(
+        !files.some((name) => name.toLowerCase() === target.toLowerCase()),
+        `Colisión de artefacto: ${target}`,
+      );
+    }
+  }
   assert.ok(
     installer.includes(`_${version}_x64`),
     "El nombre del MSI debe identificar la versión y arquitectura x64.",
@@ -83,10 +97,22 @@ export async function generateUpdateManifest({
     platforms: {
       "windows-x86_64": {
         signature,
-        url: `https://github.com/${repository}/releases/download/${encodeURIComponent(tag)}/${encodeURIComponent(installer)}`,
+        url: `https://github.com/${repository}/releases/download/${encodeURIComponent(tag)}/${assetName}`,
       },
     },
   };
+  // GitHub rewrites spaces and other special characters in uploaded asset names.
+  // Rename both files first so the URL and uploaded basename agree. File bytes,
+  // including the signed MSI, remain unchanged.
+  if (assetName !== installer) {
+    await rename(join(bundleDir, installer), join(bundleDir, assetName));
+    try {
+      await rename(join(bundleDir, `${installer}.sig`), join(bundleDir, `${assetName}.sig`));
+    } catch (error) {
+      await rename(join(bundleDir, assetName), join(bundleDir, installer));
+      throw error;
+    }
+  }
   await writeFile(join(bundleDir, "latest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
   return manifest;
 }
