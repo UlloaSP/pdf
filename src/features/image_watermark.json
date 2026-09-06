@@ -1,0 +1,76 @@
+{
+  "id": "image_watermark",
+  "workspace": "images",
+  "name": "Marca de agua en imágenes",
+  "description": "Superpone texto o una imagen con opacidad y posición. Salida PNG.",
+  "category": "Edición",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "bmp",
+    "tif",
+    "tiff",
+    "gif"
+  ],
+  "multiple": false,
+  "fields": [
+    {
+      "key": "text",
+      "label": "Texto",
+      "type": "text",
+      "default": "© Mi imagen"
+    },
+    {
+      "key": "font_size",
+      "label": "Tamaño del texto (px)",
+      "type": "number",
+      "default": 24
+    },
+    {
+      "key": "text_color",
+      "label": "Color del texto",
+      "type": "text",
+      "default": "#ffffff"
+    },
+    {
+      "key": "image_path",
+      "label": "Ruta de marca de imagen opcional (sustituye texto)",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "image_width",
+      "label": "Ancho de marca de imagen (px)",
+      "type": "number",
+      "default": 100
+    },
+    {
+      "key": "opacity",
+      "label": "Opacidad (0–100)",
+      "type": "number",
+      "default": 50
+    },
+    {
+      "key": "position",
+      "label": "Posición",
+      "type": "select",
+      "default": "Abajo derecha",
+      "options": [
+        "Arriba izquierda",
+        "Arriba derecha",
+        "Centro",
+        "Abajo izquierda",
+        "Abajo derecha"
+      ]
+    },
+    {
+      "key": "margin",
+      "label": "Margen (px)",
+      "type": "number",
+      "default": 10
+    }
+  ],
+  "requirements": []
+}
