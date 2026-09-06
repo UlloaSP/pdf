@@ -12,7 +12,7 @@ def run(inputs, output_dir, options):
         quality = int(options.get("quality", 90))
         if str(options.get("quality", 90)) != str(quality) or not 1 <= quality <= 95:
             raise ValueError()
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, OverflowError):
         raise ValueError("Calidad: usa un entero entre 1 y 95.") from None
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)

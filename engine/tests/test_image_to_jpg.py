@@ -73,3 +73,8 @@ class ImageToJpgTests(unittest.TestCase):
         Image.new("RGB", (2, 2)).save(source, save_all=True, append_images=[Image.new("RGB", (9, 9))])
         with patch.object(feature, "MAX_PIXELS", 82), self.assertRaises(ValueError):
             feature.run([str(source)], str(self.root / "variable"), {})
+
+    def test_nonfinite_quality(self):
+        for value in (float("inf"), float("-inf"), float("nan")):
+            with self.assertRaises(ValueError):
+                feature.run(["unused"], str(self.root), {"quality": value})
