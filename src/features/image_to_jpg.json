@@ -1,0 +1,28 @@
+{
+  "id": "image_to_jpg",
+  "workspace": "images",
+  "name": "Convertir a JPG",
+  "description": "Convierte PNG, GIF, TIFF, BMP, WEBP y PSD a JPG. Extrae los fotogramas y aplana la transparencia sobre blanco.",
+  "category": "Conversión",
+  "extensions": [
+    "jpg",
+    "jpeg",
+    "png",
+    "gif",
+    "tif",
+    "tiff",
+    "bmp",
+    "webp",
+    "psd"
+  ],
+  "multiple": true,
+  "fields": [
+    {
+      "key": "quality",
+      "label": "Calidad JPG (1–95)",
+      "type": "number",
+      "default": 90
+    }
+  ],
+  "requirements": []
+}
