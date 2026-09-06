@@ -1,6 +1,6 @@
 # PDF Utils
 
-Aplicación de utilidades PDF e imágenes para Windows. React + TypeScript + Vite+ en el frontend, Tauri 2 + Rust como backend local y un worker Python empaquetado para los motores. Sin servidor obligatorio.
+Aplicación de utilidades PDF, imágenes y colores para Windows. React + TypeScript + Vite+ en el frontend, Tauri 2 + Rust como backend local y un worker Python empaquetado para los motores. Sin servidor obligatorio.
 
 La interfaz usa Tailwind CSS v4 y componentes shadcn/ui sobre Radix, personalizados con los temas de la app. Los scripts de mantenimiento también usan TypeScript, ejecutado directamente por Node 24. Consulta las [convenciones del frontend](docs/frontend.md).
 
@@ -11,6 +11,8 @@ El [plan de arquitectura](docs/architecture.md) contiene las decisiones, las 32 
 45 utilidades con búsqueda y formularios en español, separadas en PDF e Imágenes en la sidebar. PDF conserva las 32 utilidades anteriores, incluidas las conversiones entre PDF e imágenes. Imágenes añade 13 herramientas de edición y conversión. Las operaciones que necesitan motores externos lo indican en su formulario. La vista de navegador permite consultar opciones; el procesamiento requiere la aplicación de escritorio. Consulta el [registro de entrega](docs/delivery.md) para ver las PR integradas, el alcance real y los límites de cada utilidad.
 
 Eliminar fondo requiere rembg y un modelo U2NET local compatible. HTML a imagen utiliza Chrome o Edge instalado. Ampliar imagen usa interpolación Lanczos; pixelar requiere indicar las regiones. Los formatos admitidos y los límites están documentados por utilidad.
+
+Colores añade cinco herramientas interactivas que también funcionan en navegador: inspector con 51 espacios y 148 nombres CSS, armonías/paletas, contraste y simulaciones, extracción desde imágenes y pinturas. En Pinturas puedes importar un catálogo JSON propio o configurar temporalmente un token de Encycolorpedia. No se incluye su catálogo privado; la conexión está preparada, pendiente de validar con una cuenta. Consulta [cobertura y límites](docs/colors-plan.md).
 
 El [Gitflow](docs/gitflow.md) define ramas, PR y merges para cada petición. El [plan de implementación](docs/implementation-plan.md) recoge el reparto paralelo y los límites de esta entrega.
 

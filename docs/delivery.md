@@ -1,4 +1,20 @@
-# Entrega de utilidades PDF e imágenes
+# Entrega de utilidades PDF, imágenes y colores
+
+## Biblioteca Colores
+
+La [infraestructura #58](https://github.com/UlloaSP/pdf/pull/58) y las cinco utilidades están integradas en develop:
+
+| Utilidad | PR |
+|---|---|
+| Armonías y paletas | [#59](https://github.com/UlloaSP/pdf/pull/59) |
+| Inspector y conversiones | [#60](https://github.com/UlloaSP/pdf/pull/60) |
+| Pinturas e integración API | [#61](https://github.com/UlloaSP/pdf/pull/61) |
+| Extracción desde imágenes | [#62](https://github.com/UlloaSP/pdf/pull/62) |
+| Accesibilidad | [#63](https://github.com/UlloaSP/pdf/pull/63) |
+
+La unión supera 53 pruebas frontend, lint, tipos y build. Se verificaron las 32 tarjetas PDF, 13 de Imágenes, Ctrl+K, los cinco módulos de Colores, tema oscuro y texto de 18 px a 580 x 500 sin desbordamiento. La muestra cambia mediante CSSOM con una CSP sin unsafe-inline. Se probaron importación/exportación local, persistencia, cuentagotas con teclado, simulaciones, descarga de paletas y un error 403 simulado sin persistir el token.
+
+El usuario confirmó que no dispone de cuenta de Encycolorpedia y eligió conexión preparada e importación local. No se validaron consultas autenticadas ni se incluye su catálogo privado. El [plan y cobertura](colors-plan.md) detalla los límites. CodeRabbit devolvió Review rate limited sobre los heads finales; cada PR registra revisión independiente y CI aprobado según Gitflow. La infraestructura generó MSI en [CI 34036684296](https://github.com/UlloaSP/pdf/actions/runs/34036684296). El CI completo sobre develop valida el instalador del conjunto; no se publica una release de producto.
 
 ## Migración del frontend
 
