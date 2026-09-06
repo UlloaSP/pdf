@@ -35,6 +35,9 @@ importers:
       cn:
         specifier: ^0.2.5
         version: 0.2.5
+      colorjs.io:
+        specifier: 0.7.1
+        version: 0.7.1
       lucide-react:
         specifier: ^1.41.0
         version: 1.41.0(react@19.2.8)
@@ -2110,6 +2113,9 @@ packages:
 
   code-block-writer@13.0.3:
     resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
+
+  colorjs.io@0.7.1:
+    resolution: {integrity: sha512-LY7OHnJZxHwT5UlzNa9bbhHHDbzB6yE5+3MIPwJEQKRvSCt/T4G7epsj+9j2BExUIIfXFIJGsIXUKdfrK9Q5tA==}
 
   commander@11.1.0:
     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
@@ -5390,6 +5396,8 @@ snapshots:
   cn@0.2.5: {}
 
   code-block-writer@13.0.3: {}
+
+  colorjs.io@0.7.1: {}
 
   commander@11.1.0: {}
 

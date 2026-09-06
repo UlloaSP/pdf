@@ -1,4 +1,12 @@
-import { FileText, ImageIcon, Settings2, RefreshCw, Search, ArrowUpRight } from "lucide-react";
+import {
+  FileText,
+  ImageIcon,
+  Palette,
+  Settings2,
+  RefreshCw,
+  Search,
+  ArrowUpRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { InputGroup, InputGroupInput, InputGroupAddon } from "@/components/ui/input-group";
@@ -20,6 +28,7 @@ import { WindowControls } from "./WindowControls";
 import { tools } from "./tools";
 import { features, type Feature } from "./features";
 import { Workspace } from "./Workspace";
+import { Colors } from "./colors/Colors";
 
 const ids = [
   "merge",
@@ -144,8 +153,9 @@ export function App() {
       unlisten?.();
     };
   }, []);
-  const [workspace, setWorkspace] = useState<"pdf" | "images">("pdf");
-  const workspaceLabel = workspace === "pdf" ? "PDF" : "Imágenes";
+  const [workspace, setWorkspace] = useState<"pdf" | "images" | "colors">("pdf");
+  const workspaceLabel =
+    workspace === "pdf" ? "PDF" : workspace === "images" ? "Imágenes" : "Colores";
   const [query, setQuery] = useState("");
   const main = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -192,7 +202,7 @@ export function App() {
               value={workspace}
               disabled={busy || updater.installing}
               onValueChange={(value) => {
-                if (value !== "pdf" && value !== "images") return;
+                if (value !== "pdf" && value !== "images" && value !== "colors") return;
                 setShowSettings(false);
                 setWorkspace(value);
                 setQuery("");
@@ -206,6 +216,10 @@ export function App() {
               <ToggleGroupItem value="images" className="h-11 w-full justify-start gap-3">
                 <ImageIcon data-icon="inline-start" />
                 Imágenes
+              </ToggleGroupItem>
+              <ToggleGroupItem value="colors" className="h-11 w-full justify-start gap-3">
+                <Palette data-icon="inline-start" />
+                Colores
               </ToggleGroupItem>
             </ToggleGroup>
           </nav>
@@ -258,7 +272,9 @@ export function App() {
           />
         )}
         <div hidden={showSettings} inert={updater.installing}>
-          {selected ? (
+          {workspace === "colors" ? (
+            <Colors searchRef={search} query={query} onQueryChange={setQuery} />
+          ) : selected ? (
             <div className="mx-auto my-2 max-w-[1000px]">
               <Workspace
                 key={selected.id}
